@@ -1,0 +1,55 @@
+.dashboard-card .card-padding {
+  padding: 30px;
+  text-align: center;
+}
+
+.dashboard-card .card-number {
+  padding: 10px;
+}
+
+.dashboard-card .card-number-label {
+  font-size: 34px;
+  font-weight: 900;
+}
+
+.dashboard-card .card-label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #757575;
+}
+
+.dashboard-card .card-icon-video {
+  border: 2px solid #2981ff;
+  display: inline-flex;
+  padding: 7px;
+  background: #e5f3fe;
+  color: #2981ff;
+  border-radius: 27px;
+}
+
+.dashboard-card .card-icon-img {
+  border: 2px solid #7e5ffe;
+  display: inline-flex;
+  padding: 7px;
+  background: #f3f1ff;
+  color: #7e5ffe;
+  border-radius: 27px;
+}
+
+.dashboard-card .card-icon-document {
+  border: 2px solid #fccc3f;
+  display: inline-flex;
+  padding: 7px;
+  background: #fef8e5;
+  color: #fccc3f;
+  border-radius: 27px;
+}
+
+.dashboard-card .card-icon-other {
+  border: 2px solid #56ce55;
+  display: inline-flex;
+  padding: 7px;
+  background: #ebf9ea;
+  color: #56ce55;
+  border-radius: 27px;
+}
