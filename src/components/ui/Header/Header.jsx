@@ -1,13 +1,17 @@
-import React from "react";
+import React, { Fragment } from "react";
 import {
   AppBar,
   Toolbar,
   IconButton,
   Typography,
   makeStyles,
+  Menu,
+  MenuItem,
+  Divider,
 } from "@material-ui/core";
 import clsx from "clsx";
-import MenuIcon from "@material-ui/icons/Menu";
+import { Menu as MenuIcon, AccountCircle } from "@material-ui/icons";
+import { withRouter } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -33,6 +37,22 @@ const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginRight: 36,
   },
+  headerClass: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "space-between",
+  },
+  headerClassH6: {
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "column",
+  },
+  profileMenu: {
+    fontWeight: "bold",
+    fontSize: 16,
+    textAlign: "center",
+    padding: 12,
+  },
   hide: {
     display: "none",
   },
@@ -40,32 +60,94 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = (props) => {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [, setMobileMoreAnchorEl] = React.useState(null);
+
+  const isMenuOpen = Boolean(anchorEl);
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
+
+  const menuId = "primary-search-account-menu";
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <div className={classes.profileMenu}>
+        <Typography variant="inherit" noWrap>
+          Sanket Patel
+        </Typography>
+      </div>
+      <Divider />
+      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem
+        onClick={() => {
+          handleMenuClose();
+          localStorage.clear();
+          props.history.push("/signup");
+        }}
+      >
+        Logout
+      </MenuItem>
+    </Menu>
+  );
 
   return (
-    <AppBar
-      position="fixed"
-      className={clsx(classes.appBar, {
-        [classes.appBarShift]: props.open,
-      })}
-    >
-      <Toolbar>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={props.handleDrawerOpen}
-          edge="start"
-          className={clsx(classes.menuButton, {
-            [classes.hide]: props.open,
-          })}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" noWrap>
-          {props.title}
-        </Typography>
-      </Toolbar>
-    </AppBar>
+    <Fragment>
+      <AppBar
+        position="fixed"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: props.open,
+        })}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={props.handleDrawerOpen}
+            edge="start"
+            className={clsx(classes.menuButton, {
+              [classes.hide]: props.open,
+            })}
+          >
+            <MenuIcon />
+          </IconButton>
+          <div className={classes.headerClass}>
+            <Typography className={classes.headerClassH6} variant="h6" noWrap>
+              {props.title}
+            </Typography>
+            <IconButton
+              edge="end"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+          </div>
+        </Toolbar>
+      </AppBar>
+      {renderMenu}
+    </Fragment>
   );
 };
 
-export default Header;
+export default withRouter(Header);
