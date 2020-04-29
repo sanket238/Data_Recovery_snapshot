@@ -14,7 +14,7 @@ function Routes() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/" component={App} />
+        <Route exact path="/" component={App} />
         <Route path="/signin" component={SignIn} />
         <Route path="/signup" component={SignUp} />
         <Route path="/forgot-password" component={ForgotPassword} />
