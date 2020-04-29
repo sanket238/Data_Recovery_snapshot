@@ -28,7 +28,11 @@ const Card = (props) => {
 
   return (
     <Grid item xs={12} sm={3}>
-      <MaterialCard className="dashboard-card">
+      <MaterialCard
+        style={props.style ? props.style : {}}
+        onClick={() => props.onClick(props.label)}
+        className="dashboard-card"
+      >
         <div className="card-padding">
           <div className={classNames[props.icon]}>{images[props.icon]}</div>
           <div className="card-number">
