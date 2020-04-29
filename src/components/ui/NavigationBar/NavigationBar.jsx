@@ -219,7 +219,7 @@ const NavigationBar = (props) => {
       </ListItem>
       <ListItem
         onClick={() => {
-          localStorage.clear();
+          localStorage.setItem("isLoggedIn", false);
           props.history.push("/signin");
           props.setOpen(true);
           props.setSelectedItem("Logout");
