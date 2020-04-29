@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Avatar,
   Button,
@@ -59,6 +59,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignUp() {
+  const [inputs, setInputs] = useState({});
+
+  const handleChange = (e) => {
+    setInputs({ ...inputs, [e.target.name]: e.target.value });
+  };
+
   const classes = useStyles();
 
   return (
@@ -80,6 +86,7 @@ export default function SignUp() {
                     autoComplete="fname"
                     name="firstName"
                     variant="outlined"
+                    onChange={handleChange}
                     required
                     fullWidth
                     id="firstName"
@@ -90,6 +97,7 @@ export default function SignUp() {
                 <Grid item xs={12} sm={6}>
                   <TextField
                     variant="outlined"
+                    onChange={handleChange}
                     required
                     fullWidth
                     id="lastName"
@@ -101,6 +109,7 @@ export default function SignUp() {
                 <Grid item xs={12}>
                   <TextField
                     variant="outlined"
+                    onChange={handleChange}
                     required
                     fullWidth
                     id="email"
@@ -112,6 +121,7 @@ export default function SignUp() {
                 <Grid item xs={12}>
                   <TextField
                     variant="outlined"
+                    onChange={handleChange}
                     required
                     fullWidth
                     name="password"
