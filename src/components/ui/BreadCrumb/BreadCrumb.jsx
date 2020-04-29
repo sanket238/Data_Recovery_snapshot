@@ -10,19 +10,14 @@ const StyledBreadcrumb = withStyles((theme) => ({
     fontSize: 14,
     fontWeight: 700,
     border: "2px solid",
-    "&:active": {
+    "&:hover": {
       boxShadow: theme.shadows[1],
       backgroundColor: emphasize(theme.palette.grey[300], 0.12),
     },
   },
 }))(Chip);
 
-function handleClick(event) {
-  event.preventDefault();
-  console.info("You clicked a breadcrumb.");
-}
-
-export default function BreadCrumb() {
+export default function BreadCrumb(props) {
   return (
     <Breadcrumbs separator={<NavigateNext />} aria-label="breadcrumb">
       <StyledBreadcrumb
@@ -30,15 +25,19 @@ export default function BreadCrumb() {
         href="#"
         label="Home"
         icon={<HomeIcon fontSize="small" />}
-        onClick={handleClick}
+        onClick={() => props.handleClick(0)}
       />
-      <StyledBreadcrumb
-        component="a"
-        href="#"
-        label="D://"
-        icon={<Folder fontSize="small" />}
-        onClick={handleClick}
-      />
+      {props.data.map((item, index) => {
+        return (
+          <StyledBreadcrumb
+            key={index}
+            component="a"
+            label={item}
+            icon={<Folder fontSize="small" />}
+            onClick={() => props.handleClick(index + 1)}
+          />
+        );
+      })}
     </Breadcrumbs>
   );
 }
