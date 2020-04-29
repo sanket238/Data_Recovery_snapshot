@@ -69,7 +69,7 @@ const SignIn = (props) => {
   const onLogin = (e) => {
     e.preventDefault();
     localStorage.setItem("username", inputs.email);
-    props.history.push("/dashboard");
+    props.history.push("/");
   };
 
   return (
