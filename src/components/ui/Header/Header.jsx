@@ -100,7 +100,7 @@ const Header = (props) => {
         onClick={() => {
           handleMenuClose();
           localStorage.clear();
-          props.history.push("/signup");
+          props.history.push("/signin");
         }}
       >
         Logout
