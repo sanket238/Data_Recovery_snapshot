@@ -13,16 +13,14 @@ import {
   Card,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" to="/">
-        Your Website
-      </Link>{" "}
+
       {new Date().getFullYear()}
       {"."}
     </Typography>
@@ -58,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignUp() {
+const SignUp = (props) => {
   const [inputs, setInputs] = useState({});
 
   const handleChange = (e) => {
@@ -66,6 +64,15 @@ export default function SignUp() {
   };
 
   const classes = useStyles();
+
+  const onRegister = (e) => {
+    e.preventDefault();
+    localStorage.setItem("username", inputs.email);
+    localStorage.setItem("password", inputs.password);
+    localStorage.setItem("firstname", inputs.firstname);
+    localStorage.setItem("lastname", inputs.lastname);
+    props.history.push("/signin");
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -79,12 +86,12 @@ export default function SignUp() {
             <Typography component="h1" variant="h5">
               Sign up
             </Typography>
-            <form className={classes.form} noValidate>
+            <form onSubmit={onRegister} className={classes.form} noValidate>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <TextField
                     autoComplete="fname"
-                    name="firstName"
+                    name="firstname"
                     variant="outlined"
                     onChange={handleChange}
                     required
@@ -102,7 +109,7 @@ export default function SignUp() {
                     fullWidth
                     id="lastName"
                     label="Last Name"
-                    name="lastName"
+                    name="lastname"
                     autoComplete="lname"
                   />
                 </Grid>
@@ -136,7 +143,7 @@ export default function SignUp() {
                     control={
                       <Checkbox value="allowExtraEmails" color="primary" />
                     }
-                    label="I want to receive inspiration, marketing promotions and updates via email."
+                    label="I accept the terms & conditions."
                   />
                 </Grid>
               </Grid>
@@ -166,4 +173,6 @@ export default function SignUp() {
       </div>
     </Container>
   );
-}
+};
+
+export default withRouter(SignUp);
