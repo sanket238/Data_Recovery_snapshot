@@ -20,9 +20,6 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" to="/">
-        Your Website
-      </Link>{" "}
       {new Date().getFullYear()}
       {"."}
     </Typography>
@@ -61,15 +58,24 @@ const useStyles = makeStyles((theme) => ({
 const SignIn = (props) => {
   const classes = useStyles();
   const [inputs, setInputs] = useState({});
+  const [error, setError] = useState(false);
 
   const handleChange = (e) => {
+    setError(false);
     setInputs({ ...inputs, [e.target.name]: e.target.value });
   };
 
   const onLogin = (e) => {
     e.preventDefault();
-    localStorage.setItem("username", inputs.email);
-    props.history.push("/");
+    let username = localStorage.getItem("username");
+    let password = localStorage.getItem("password");
+
+    if (inputs.email === username && inputs.password === password) {
+      localStorage.setItem("isLoggedIn", true);
+      props.history.push("/");
+    } else {
+      setError(true);
+    }
   };
 
   return (
@@ -113,6 +119,22 @@ const SignIn = (props) => {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
+              {error ? (
+                <div
+                  style={{
+                    fontSize: 16,
+                    textAlign: "center",
+                    color: "#dc094e",
+                    fontWeight: "bold",
+                    borderRadius: 5,
+                    background: "#fef0f5",
+                    border: "2px solid #dc094e",
+                    padding: 15,
+                  }}
+                >
+                  Invalid Email or Password
+                </div>
+              ) : null}
               <Button
                 type="submit"
                 fullWidth
