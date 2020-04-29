@@ -91,7 +91,9 @@ const Header = (props) => {
     >
       <div className={classes.profileMenu}>
         <Typography variant="inherit" noWrap>
-          Sanket Patel
+          {localStorage.getItem("firstname") +
+            " " +
+            localStorage.getItem("lastname")}
         </Typography>
       </div>
       <Divider />
@@ -99,7 +101,7 @@ const Header = (props) => {
       <MenuItem
         onClick={() => {
           handleMenuClose();
-          localStorage.clear();
+          localStorage.setItem("isLoggedIn", false);
           props.history.push("/signin");
         }}
       >
