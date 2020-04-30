@@ -15,6 +15,7 @@ import {
   Card,
 } from "@material-ui/core";
 import { Link, withRouter } from "react-router-dom";
+import "./SignIn.css";
 
 function Copyright() {
   return (
@@ -50,7 +51,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
   card: {
-    margin: theme.spacing(-5),
     padding: theme.spacing(5),
   },
 }));
@@ -81,8 +81,8 @@ const SignIn = (props) => {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <div className={classes.container}>
-        <Card className={classes.card}>
+      <div className={classes.container + " signin-card"}>
+        <Card className={"signin-card-margin"}>
           <div className={classes.paper}>
             <Avatar className={classes.avatar}>
               <LockOutlinedIcon />
