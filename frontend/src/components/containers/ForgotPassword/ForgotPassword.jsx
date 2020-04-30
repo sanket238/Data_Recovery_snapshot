@@ -15,6 +15,7 @@ import {
   Card,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import "./ForgotPassword.css";
 
 function Copyright() {
   return (
@@ -64,8 +65,8 @@ export default function ForgotPassword() {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <div className={classes.container}>
-        <Card className={classes.card}>
+      <div className={classes.container + " forgot-card"}>
+        <Card className="forgot-card-margin">
           <div className={classes.paper}>
             <Avatar className={classes.avatar}>
               <LockOutlinedIcon />
