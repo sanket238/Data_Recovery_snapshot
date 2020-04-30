@@ -1,0 +1,15 @@
+.signup-card-margin {
+  margin: -40px !important;
+  padding: 50px;
+}
+
+@media only screen and (max-width: 600px) {
+  .signup-card-margin {
+    margin: 0px !important;
+    padding: 20px;
+  }
+  .signup-card {
+    height: 100% !important;
+    margin: 15px 0px !important;
+  }
+}

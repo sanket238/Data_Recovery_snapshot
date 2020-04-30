@@ -15,6 +15,7 @@ import {
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { Link, withRouter } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
+import "./SignUp.css";
 
 function Copyright() {
   return (
@@ -77,8 +78,8 @@ const SignUp = (props) => {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <div className={classes.container}>
-        <Card className={classes.card}>
+      <div className={classes.container + " signup-card"}>
+        <Card className={"signup-card-margin"}>
           <div className={classes.paper}>
             <Avatar className={classes.avatar}>
               <LockOutlinedIcon />
