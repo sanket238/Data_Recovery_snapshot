@@ -21,6 +21,7 @@ import {
   Home,
 } from "@material-ui/icons";
 import { withRouter } from "react-router-dom";
+import "./NavigationBar.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {

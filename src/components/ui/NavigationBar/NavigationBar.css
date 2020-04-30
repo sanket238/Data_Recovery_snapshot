@@ -1,0 +1,9 @@
+@media only screen and (max-width: 800px) {
+  .makeStyles-drawerClose-4 {
+    width: 0px !important;
+  }
+
+  .makeStyles-drawerOpen-3 {
+    position: fixed !important;
+  }
+}
