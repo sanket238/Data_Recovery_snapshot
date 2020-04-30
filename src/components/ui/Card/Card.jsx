@@ -27,7 +27,7 @@ const Card = (props) => {
   };
 
   return (
-    <Grid item xs={12} sm={3}>
+    <Grid item xs={12} md={6} lg={3} sm={6}>
       <MaterialCard
         style={props.style ? props.style : {}}
         onClick={() => props.onClick(props.label)}
