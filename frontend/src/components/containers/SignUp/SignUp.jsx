@@ -59,8 +59,14 @@ const useStyles = makeStyles((theme) => ({
 
 const SignUp = (props) => {
   const [inputs, setInputs] = useState({});
+  const [validatePassword, setValidatePassword] = useState(false);
 
   const handleChange = (e) => {
+    if (e.target.name === "password" && validatePassword) {
+      if (e.target.value.length > 7) {
+        setValidatePassword(false);
+      }
+    }
     setInputs({ ...inputs, [e.target.name]: e.target.value });
   };
 
@@ -68,11 +74,15 @@ const SignUp = (props) => {
 
   const onRegister = (e) => {
     e.preventDefault();
-    localStorage.setItem("username", inputs.email);
-    localStorage.setItem("password", inputs.password);
-    localStorage.setItem("firstname", inputs.firstname);
-    localStorage.setItem("lastname", inputs.lastname);
-    props.history.push("/signin");
+    if (inputs.password.length < 8) {
+      setValidatePassword(true);
+    } else {
+      localStorage.setItem("username", inputs.email);
+      localStorage.setItem("password", inputs.password);
+      localStorage.setItem("firstname", inputs.firstname);
+      localStorage.setItem("lastname", inputs.lastname);
+      props.history.push("/signin");
+    }
   };
 
   return (
@@ -128,6 +138,7 @@ const SignUp = (props) => {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
+                    error={validatePassword}
                     variant="outlined"
                     onChange={handleChange}
                     required
@@ -138,7 +149,13 @@ const SignUp = (props) => {
                     id="password"
                     autoComplete="current-password"
                   />
+                  {validatePassword && (
+                    <div style={{ color: "#dc094e", marginTop: 5 }}>
+                      Password should contains at lease 8 characters.
+                    </div>
+                  )}
                 </Grid>
+
                 <Grid item xs={12}>
                   <FormControlLabel
                     control={

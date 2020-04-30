@@ -59,9 +59,15 @@ const SignIn = (props) => {
   const classes = useStyles();
   const [inputs, setInputs] = useState({});
   const [error, setError] = useState(false);
+  const [validatePassword, setValidatePassword] = useState(false);
 
   const handleChange = (e) => {
     setError(false);
+    if (e.target.name === "password" && validatePassword) {
+      if (e.target.value.length > 7) {
+        setValidatePassword(false);
+      }
+    }
     setInputs({ ...inputs, [e.target.name]: e.target.value });
   };
 
@@ -70,7 +76,9 @@ const SignIn = (props) => {
     let username = localStorage.getItem("username");
     let password = localStorage.getItem("password");
 
-    if (inputs.email === username && inputs.password === password) {
+    if (inputs.password.length < 8) {
+      setValidatePassword(true);
+    } else if (inputs.email === username && inputs.password === password) {
       localStorage.setItem("isLoggedIn", true);
       props.history.push("/");
     } else {
@@ -90,7 +98,7 @@ const SignIn = (props) => {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
-            <form onSubmit={onLogin} className={classes.form} noValidate>
+            <form onSubmit={onLogin} className={classes.form}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -104,6 +112,7 @@ const SignIn = (props) => {
                 autoFocus
               />
               <TextField
+                error={validatePassword}
                 variant="outlined"
                 margin="normal"
                 required
@@ -115,6 +124,12 @@ const SignIn = (props) => {
                 id="password"
                 autoComplete="current-password"
               />
+              {validatePassword && (
+                <div style={{ color: "#dc094e" }}>
+                  Password should contains at lease 8 characters.
+                </div>
+              )}
+
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
