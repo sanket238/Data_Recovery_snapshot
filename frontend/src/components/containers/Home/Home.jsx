@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import { Grid, Container } from "@material-ui/core";
+import {
+  Grid,
+  Container,
+  Divider,
+  CssBaseline,
+  Drawer,
+  IconButton,
+} from "@material-ui/core";
 import Card from "../../ui/Card/Card";
 import BreadCrumb from "../../ui/BreadCrumb/BreadCrumb";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import { ChevronLeft, ChevronRight } from "@material-ui/icons";
 import Header from "../../ui/Header/Header";
 import NavigationBar from "../../ui/NavigationBar/NavigationBar";
 
@@ -271,11 +273,7 @@ export default function Home() {
       >
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
+            {theme.direction === "rtl" ? <ChevronRight /> : <ChevronLeft />}
           </IconButton>
         </div>
         <Divider />
