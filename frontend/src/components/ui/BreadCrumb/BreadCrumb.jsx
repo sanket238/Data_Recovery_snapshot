@@ -1,8 +1,7 @@
 import React from "react";
 import { emphasize, withStyles } from "@material-ui/core/styles";
 import { Breadcrumbs, Chip } from "@material-ui/core";
-import HomeIcon from "@material-ui/icons/Home";
-import { Folder, NavigateNext } from "@material-ui/icons";
+import { Folder, NavigateNext, Home } from "@material-ui/icons";
 
 const StyledBreadcrumb = withStyles((theme) => ({
   root: {
@@ -24,7 +23,7 @@ export default function BreadCrumb(props) {
         component="a"
         href="#"
         label="Home"
-        icon={<HomeIcon fontSize="small" />}
+        icon={<Home fontSize="small" />}
         onClick={() => props.handleClick(0)}
       />
       {props.data.map((item, index) => {
