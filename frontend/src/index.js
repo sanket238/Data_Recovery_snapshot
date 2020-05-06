@@ -4,6 +4,8 @@ import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import Routes from "./Routes";
+import { Provider } from "react-redux";
+import configureStore from "./redux/store/configureStore";
 
 const theme = createMuiTheme({
   palette: {
@@ -15,10 +17,15 @@ const theme = createMuiTheme({
     },
   },
 });
+
+const store = configureStore();
+
 ReactDOM.render(
   <React.StrictMode>
     <MuiThemeProvider theme={theme}>
-      <Routes />
+      <Provider store={store}>
+        <Routes />
+      </Provider>
     </MuiThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
