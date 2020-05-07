@@ -4,6 +4,7 @@ import * as logging from "@utils/logging";
 import { performance } from "perf_hooks";
 import { promisify } from "util";
 import regexPatterns from "./regex-patterns";
+import { filetype } from "./file-type";
 
 const escape = require("regex-escape");
 const matchAll = require("string.prototype.matchall");
@@ -112,7 +113,7 @@ export default class RecoveryFileParser implements IRecoveryFileParser {
             .replace(/,/g, "")
             .trim()
         );
-
+        let info: any = {};
         let files = entries
           .split(/\r\n/)
           .slice(2, 2 + numberOfFiles)
@@ -139,6 +140,11 @@ export default class RecoveryFileParser implements IRecoveryFileParser {
                 /(?:\d{2}\/\d{2}\/\d{4}\s\s\d{1,2}\:\d{1,2}\s(?:A|P)M\s+.+(?:\s))(.+)/
               ) || [])[1] || ""
             ).trim();
+
+            let type = filetype(name);
+
+            info[type] = info[type] ? info[type] + 1 : 1;
+
             let tempFile = {
               date,
               name,
@@ -151,7 +157,8 @@ export default class RecoveryFileParser implements IRecoveryFileParser {
           ...dir,
           files,
           numberOfFiles,
-          totalSize
+          totalSize,
+          info
         };
       });
 
@@ -166,6 +173,22 @@ export default class RecoveryFileParser implements IRecoveryFileParser {
         );
         if (childDirIndex !== -1) {
           directories[parentDirIndex].directories[childDirIndex] = dir;
+          let info = {
+            ...directories[parentDirIndex].info
+          };
+          let childInfo = {
+            ...dir.info
+          };
+          for (const key of Object.keys(childInfo).concat(Object.keys(info))) {
+            info[key] = info[key]
+              ? childInfo[key]
+                ? childInfo[key] + info[key]
+                : info[key]
+              : childInfo[key]
+              ? childInfo[key]
+              : undefined;
+          }
+          directories[parentDirIndex].info = info;
           directories = directories.filter(d => d.path !== dir.path);
         }
       }
