@@ -1,5 +1,6 @@
 coverage==4.5.3
 Django==2.1.7
+django-cors-headers==3.2.1
 djangorestframework==3.9.2
 Pillow==5.4.1
 pre_commit==1.14.4
