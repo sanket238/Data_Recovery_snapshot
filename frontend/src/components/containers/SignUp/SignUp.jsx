@@ -13,8 +13,10 @@ import {
   Card,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import { Link, withRouter } from "react-router-dom";
+import { Link, withRouter, Redirect } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
+import { connect } from "react-redux";
+
 import "./SignUp.css";
 
 function Copyright() {
@@ -60,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
 const SignUp = (props) => {
   const [inputs, setInputs] = useState({});
   const [validatePassword, setValidatePassword] = useState(false);
+  const [data, setData] = useState({});
 
   const handleChange = (e) => {
     if (e.target.name === "password" && validatePassword) {
@@ -77,15 +80,39 @@ const SignUp = (props) => {
     if (inputs.password.length < 8) {
       setValidatePassword(true);
     } else {
-      localStorage.setItem("username", inputs.email);
-      localStorage.setItem("password", inputs.password);
-      localStorage.setItem("firstname", inputs.firstname);
-      localStorage.setItem("lastname", inputs.lastname);
-      props.history.push("/signin");
+      let name = inputs.fullname;
+      let username = inputs.username;
+      let email = inputs.email;
+      let password = inputs.password;
+
+      const data = {
+        name,
+        username,
+        email,
+        password,
+      };
+
+      fetch("http://127.0.0.1:8000/api/v1/user/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setData(data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     }
   };
 
-  return (
+  let isSuccess =
+    Object.keys(data).length > 0 && typeof data.id !== "undefined";
+
+  return !isSuccess ? (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.container + " signup-card"}>
@@ -99,29 +126,29 @@ const SignUp = (props) => {
             </Typography>
             <form onSubmit={onRegister} className={classes.form} noValidate>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                   <TextField
                     autoComplete="fname"
-                    name="firstname"
+                    name="username"
                     variant="outlined"
                     onChange={handleChange}
                     required
                     fullWidth
-                    id="firstName"
-                    label="First Name"
+                    id="userName"
+                    label="Username"
                     autoFocus
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                   <TextField
                     variant="outlined"
                     onChange={handleChange}
                     required
                     fullWidth
-                    id="lastName"
-                    label="Last Name"
-                    name="lastname"
-                    autoComplete="lname"
+                    id="name"
+                    label="Full name"
+                    name="fullname"
+                    autoComplete="fname"
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -154,6 +181,24 @@ const SignUp = (props) => {
                       Password should contains at lease 8 characters.
                     </div>
                   )}
+                  {Object.keys(data).length > 0 &&
+                  typeof data.id === "undefined" ? (
+                    <div
+                      style={{
+                        fontSize: 16,
+                        textAlign: "center",
+                        marginTop: 20,
+                        color: "#dc094e",
+                        fontWeight: "bold",
+                        borderRadius: 5,
+                        background: "#fef0f5",
+                        border: "2px solid #dc094e",
+                        padding: 15,
+                      }}
+                    >
+                      There was a problem
+                    </div>
+                  ) : null}
                 </Grid>
 
                 <Grid item xs={12}>
@@ -190,7 +235,9 @@ const SignUp = (props) => {
         </Card>
       </div>
     </Container>
+  ) : (
+    <Redirect to="/signin" />
   );
 };
 
-export default withRouter(SignUp);
+export default withRouter(connect()(SignUp));
