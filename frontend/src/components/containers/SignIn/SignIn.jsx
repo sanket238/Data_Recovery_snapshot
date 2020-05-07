@@ -73,16 +73,32 @@ const SignIn = (props) => {
 
   const onLogin = (e) => {
     e.preventDefault();
-    let username = localStorage.getItem("username");
-    let password = localStorage.getItem("password");
 
     if (inputs.password.length < 8) {
       setValidatePassword(true);
-    } else if (inputs.email === username && inputs.password === password) {
-      localStorage.setItem("isLoggedIn", true);
-      props.history.push("/");
     } else {
-      setError(true);
+      let username = inputs.username;
+      let password = inputs.password;
+      fetch("http://127.0.0.1:8000/api/v1/user/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Basic " + btoa(username + ":" + password),
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (typeof data.detail !== "undefined") {
+            setError(true);
+          } else {
+            localStorage.setItem("isLoggedIn", true);
+            localStorage.setItem("token", data.token);
+            props.history.push("/");
+          }
+        })
+        .catch((error) => {
+          setError(true);
+        });
     }
   };
 
@@ -105,10 +121,10 @@ const SignIn = (props) => {
                 required
                 fullWidth
                 onChange={handleChange}
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="user"
                 autoFocus
               />
               <TextField
