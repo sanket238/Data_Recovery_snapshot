@@ -1,4 +1,5 @@
 # pichu
+
 [![pipeline status](https://gitlab.com/skribble/pichu/badges/master/pipeline.svg)](https://gitlab.com/skribble/pichu/commits/master)
 [![coverage report](https://gitlab.com/skribble/pichu/badges/master/coverage.svg)](https://gitlab.com/skribble/pichu/commits/master)
 
@@ -55,6 +56,7 @@ This will create a `venv` directory with its own python3.6 and pip3 binaries ins
 ### Activating virtual enviroment `venv`.
 
 To activate the virtual enviroment. Run following command.
+
 ```sh
 source venv/bin/activate
 ```
@@ -76,6 +78,13 @@ Now we're good to go.
 ```sh
 pip install -r requirements.txt
 ```
+
+## Starting Server
+
+```sh
+python ./manage.py runserver
+```
+
 And we are good to go!
 
 ## Makefile Scripts
@@ -83,6 +92,7 @@ And we are good to go!
 Project contains various scripts to test, lint, clean the project.
 
 To list the commands run
+
 ```sh
 make help
 
