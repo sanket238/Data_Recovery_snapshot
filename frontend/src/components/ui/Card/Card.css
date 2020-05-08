@@ -4,7 +4,7 @@
 }
 
 .dashboard-card:hover {
-  box-shadow: 0px 1px 28px 0px rgba(189,187,189,1);
+  box-shadow: 0px 1px 28px 0px rgba(189, 187, 189, 1);
 }
 
 .dashboard-card .card-number {
@@ -22,7 +22,7 @@
   color: #757575;
 }
 
-.dashboard-card .card-icon-video {
+.dashboard-card .card-icon-files {
   border: 2px solid #2981ff;
   display: inline-flex;
   padding: 7px;
@@ -40,12 +40,57 @@
   border-radius: 27px;
 }
 
-.dashboard-card .card-icon-document {
-  border: 2px solid #fccc3f;
+.dashboard-card .card-icon-audio {
+  border: 2px solid grey;
   display: inline-flex;
   padding: 7px;
-  background: #fef8e5;
-  color: #fccc3f;
+  background: #f3f3f3;
+  color: grey;
+  border-radius: 27px;
+}
+
+.dashboard-card .card-icon-ppt {
+  border: 2px solid #ca4424;
+  display: inline-flex;
+  padding: 7px;
+  background: #ffffff;
+  color: #ca4424;
+  border-radius: 27px;
+}
+
+.dashboard-card .card-icon-word {
+  border: 2px solid #295491;
+  display: inline-flex;
+  padding: 7px;
+  background: #ffffff;
+  color: #295491;
+  border-radius: 27px;
+}
+
+.dashboard-card .card-icon-excel {
+  border: 2px solid;
+  display: inline-flex;
+  padding: 7px;
+  background: #ffffff;
+  color: #1e6e42;
+  border-radius: 27px;
+}
+
+.dashboard-card .card-icon-pdf {
+  border: 2px solid #e71b23;
+  display: inline-flex;
+  padding: 7px;
+  background: #ffffff;
+  color: #e71b23;
+  border-radius: 27px;
+}
+
+.dashboard-card .card-icon-video {
+  border: 2px solid #000000;
+  display: inline-flex;
+  padding: 7px;
+  background: #ffffff;
+  color: #000000;
   border-radius: 27px;
 }
 

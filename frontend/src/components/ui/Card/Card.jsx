@@ -5,25 +5,36 @@ import {
   Image,
   DevicesOther,
   Folder,
-  InsertDriveFile,
+  Audiotrack,
+  Assignment,
+  Description,
+  PictureAsPdf
 } from "@material-ui/icons";
 import "./Card.css";
 
-const Card = (props) => {
+const Card = props => {
   let images = {
-    Files: <Folder fontSize={"large"} />,
-    Image: <Image fontSize={"large"} />,
-    Other: <DevicesOther fontSize={"large"} />,
-    Video: <VideoLibrary fontSize={"large"} />,
-    Document: <InsertDriveFile fontSize={"large"} />,
+    files: <Folder fontSize={"large"} />,
+    image: <Image fontSize={"large"} />,
+    audio: <Audiotrack fontSize={"large"} />,
+    ppt: <Assignment fontSize={"large"} />,
+    word: <Description fontSize={"large"} />,
+    excel: <Description fontSize={"large"} />,
+    pdf: <PictureAsPdf fontSize={"large"} />,
+    other: <DevicesOther fontSize={"large"} />,
+    video: <VideoLibrary fontSize={"large"} />
   };
 
   let classNames = {
-    Files: "card-icon-video",
-    Image: "card-icon-img",
-    Other: "card-icon-other",
-    Video: "card-icon-video",
-    Document: "card-icon-document",
+    files: "card-icon-files",
+    image: "card-icon-img",
+    audio: "card-icon-audio",
+    ppt: "card-icon-ppt",
+    word: "card-icon-word",
+    excel: "card-icon-excel",
+    pdf: "card-icon-pdf",
+    other: "card-icon-other",
+    video: "card-icon-video"
   };
 
   return (
