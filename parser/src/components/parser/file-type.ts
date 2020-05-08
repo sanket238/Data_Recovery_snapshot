@@ -4,29 +4,32 @@ export const filetype = (filename: string) => {
   let mimetype = mime.lookup(filename);
   switch (mimetype.split("/")[0]) {
     case "image":
-      return "Image";
+      return "image";
 
     case "video":
-      return "Video";
+      return "video";
 
     case "audio":
-      return "Audio";
+      return "audio";
 
     case "application":
       switch (mimetype) {
+        case "application/vnd.ms-powerpoint":
+          return "ppt";
+
         case "application/msword":
-          return "MS Word Document";
+          return "word";
 
         case "application/vnd.ms-excel":
-          return "MS Excel Document";
+          return "excel";
 
         case "application/pdf":
-          return "PDF Document";
+          return "pdf";
 
         default:
-          return "Unknown";
+          return "other";
       }
     default:
-      return "Unknown";
+      return "other";
   }
 };
