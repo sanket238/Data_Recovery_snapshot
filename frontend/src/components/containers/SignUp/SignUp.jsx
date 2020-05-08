@@ -10,7 +10,7 @@ import {
   Box,
   Typography,
   Container,
-  Card,
+  Card
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { Link, withRouter, Redirect } from "react-router-dom";
@@ -30,41 +30,41 @@ function Copyright() {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   paper: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
+    alignItems: "center"
   },
   container: {
     height: "100vh",
     justifyContent: "center",
     flexDirection: "column",
-    display: "flex",
+    display: "flex"
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.secondary.main
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(3)
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(3, 0, 2)
   },
   card: {
     margin: theme.spacing(-5),
-    padding: theme.spacing(5),
-  },
+    padding: theme.spacing(5)
+  }
 }));
 
-const SignUp = (props) => {
+const SignUp = props => {
   const [inputs, setInputs] = useState({});
   const [validatePassword, setValidatePassword] = useState(false);
   const [data, setData] = useState({});
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     if (e.target.name === "password" && validatePassword) {
       if (e.target.value.length > 7) {
         setValidatePassword(false);
@@ -75,7 +75,7 @@ const SignUp = (props) => {
 
   const classes = useStyles();
 
-  const onRegister = (e) => {
+  const onRegister = e => {
     e.preventDefault();
     if (inputs.password.length < 8) {
       setValidatePassword(true);
@@ -89,21 +89,21 @@ const SignUp = (props) => {
         name,
         username,
         email,
-        password,
+        password
       };
 
-      fetch("http://127.0.0.1:8000/api/v1/user/register/", {
+      fetch(`${process.env.REACT_APP_SERVER_URL}/api/v1/user/register/`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(data)
       })
-        .then((response) => response.json())
-        .then((data) => {
+        .then(response => response.json())
+        .then(data => {
           setData(data);
         })
-        .catch((error) => {
+        .catch(error => {
           console.error("Error:", error);
         });
     }
@@ -193,7 +193,7 @@ const SignUp = (props) => {
                         borderRadius: 5,
                         background: "#fef0f5",
                         border: "2px solid #dc094e",
-                        padding: 15,
+                        padding: 15
                       }}
                     >
                       There was a problem

@@ -12,7 +12,7 @@ import {
   CssBaseline,
   Button,
   Avatar,
-  Card,
+  Card
 } from "@material-ui/core";
 import { Link, withRouter } from "react-router-dom";
 import "./SignIn.css";
@@ -27,41 +27,41 @@ function Copyright() {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   paper: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
+    alignItems: "center"
   },
   container: {
     height: "100vh",
     justifyContent: "center",
     flexDirection: "column",
-    display: "flex",
+    display: "flex"
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.secondary.main
   },
   form: {
     width: "100%",
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(1)
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(3, 0, 2)
   },
   card: {
-    padding: theme.spacing(5),
-  },
+    padding: theme.spacing(5)
+  }
 }));
 
-const SignIn = (props) => {
+const SignIn = props => {
   const classes = useStyles();
   const [inputs, setInputs] = useState({});
   const [error, setError] = useState(false);
   const [validatePassword, setValidatePassword] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setError(false);
     if (e.target.name === "password" && validatePassword) {
       if (e.target.value.length > 7) {
@@ -71,7 +71,7 @@ const SignIn = (props) => {
     setInputs({ ...inputs, [e.target.name]: e.target.value });
   };
 
-  const onLogin = (e) => {
+  const onLogin = e => {
     e.preventDefault();
 
     if (inputs.password.length < 8) {
@@ -79,15 +79,15 @@ const SignIn = (props) => {
     } else {
       let username = inputs.username;
       let password = inputs.password;
-      fetch("http://127.0.0.1:8000/api/v1/user/login/", {
+      fetch(`${process.env.REACT_APP_SERVER_URL}/api/v1/user/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Basic " + btoa(username + ":" + password),
-        },
+          Authorization: "Basic " + btoa(username + ":" + password)
+        }
       })
-        .then((response) => response.json())
-        .then((data) => {
+        .then(response => response.json())
+        .then(data => {
           if (typeof data.detail !== "undefined") {
             setError(true);
           } else {
@@ -96,7 +96,7 @@ const SignIn = (props) => {
             props.history.push("/");
           }
         })
-        .catch((error) => {
+        .catch(error => {
           setError(true);
         });
     }
@@ -160,7 +160,7 @@ const SignIn = (props) => {
                     borderRadius: 5,
                     background: "#fef0f5",
                     border: "2px solid #dc094e",
-                    padding: 15,
+                    padding: 15
                   }}
                 >
                   Invalid Email or Password

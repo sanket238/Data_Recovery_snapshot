@@ -73,7 +73,7 @@ export default function Home() {
   const [data, setData] = React.useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/v1/user/data/", {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/api/v1/user/data/`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
