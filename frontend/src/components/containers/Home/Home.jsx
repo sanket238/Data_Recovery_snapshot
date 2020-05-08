@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Container,
   Divider,
   CssBaseline,
   Drawer,
-  IconButton,
+  IconButton
 } from "@material-ui/core";
 import Card from "../../ui/Card/Card";
 import BreadCrumb from "../../ui/BreadCrumb/BreadCrumb";
@@ -14,36 +14,35 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { ChevronLeft, ChevronRight } from "@material-ui/icons";
 import Header from "../../ui/Header/Header";
 import NavigationBar from "../../ui/NavigationBar/NavigationBar";
-import Data from "../parse.json";
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
-    display: "flex",
+    display: "flex"
   },
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    whiteSpace: "nowrap",
+    whiteSpace: "nowrap"
   },
   drawerOpen: {
     width: drawerWidth,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+      duration: theme.transitions.duration.enteringScreen
+    })
   },
   drawerClose: {
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+      duration: theme.transitions.duration.leavingScreen
     }),
     overflowX: "hidden",
     width: theme.spacing(7) + 1,
     [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9) + 1,
-    },
+      width: theme.spacing(9) + 1
+    }
   },
   toolbar: {
     display: "flex",
@@ -51,15 +50,15 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "flex-end",
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
+    ...theme.mixins.toolbar
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: theme.spacing(3)
   },
   breadcrumb: {
-    marginBottom: 25,
-  },
+    marginBottom: 25
+  }
 }));
 
 export default function Home() {
@@ -70,15 +69,26 @@ export default function Home() {
   const [openSubMenu, setOpenSubMenu] = React.useState(false);
   const [selectedItem, setSelectedItem] = React.useState("");
   const [selectedSubMenuItem, setSubMenuSelectedItem] = React.useState("");
+  const [error, setError] = React.useState(false);
+  const [data, setData] = React.useState([]);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-    setOpenSubMenu(false);
-  };
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/v1/user/data/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token")
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setData(data);
+      })
+      .catch(error => {
+        setData([]);
+        setError(true);
+      });
+  }, []);
 
   const files = [
     {
@@ -89,8 +99,8 @@ export default function Home() {
         { label: "Video Files", icon: "Video", value: "21.2K" },
         { label: "Image Files", icon: "Image", value: "21.2K" },
         { label: "Document Files", icon: "Document", value: "21.2K" },
-        { label: "Other Files", icon: "Other", value: "21.2K" },
-      ],
+        { label: "Other Files", icon: "Other", value: "21.2K" }
+      ]
     },
     {
       label: "E://",
@@ -105,8 +115,8 @@ export default function Home() {
             { label: "Video Files", icon: "Video", value: "21.2K" },
             { label: "Image Files", icon: "Image", value: "21.2K" },
             { label: "Document Files", icon: "Document", value: "21.2K" },
-            { label: "Other Files", icon: "Other", value: "21.2K" },
-          ],
+            { label: "Other Files", icon: "Other", value: "21.2K" }
+          ]
         },
         {
           label: "boot",
@@ -116,8 +126,8 @@ export default function Home() {
             { label: "Video Files", icon: "Video", value: "21.2K" },
             { label: "Image Files", icon: "Image", value: "21.2K" },
             { label: "Document Files", icon: "Document", value: "21.2K" },
-            { label: "Other Files", icon: "Other", value: "21.2K" },
-          ],
+            { label: "Other Files", icon: "Other", value: "21.2K" }
+          ]
         },
         {
           label: "etc",
@@ -127,12 +137,21 @@ export default function Home() {
             { label: "Video Files", icon: "Video", value: "21.2K" },
             { label: "Image Files", icon: "Image", value: "21.2K" },
             { label: "Document Files", icon: "Document", value: "21.2K" },
-            { label: "Other Files", icon: "Other", value: "21.2K" },
-          ],
-        },
-      ],
-    },
+            { label: "Other Files", icon: "Other", value: "21.2K" }
+          ]
+        }
+      ]
+    }
   ];
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+    setOpenSubMenu(false);
+  };
 
   const renderCards = () => {
     const cardTree = navigation.length;
@@ -142,21 +161,21 @@ export default function Home() {
         return (
           <Card
             style={{ cursor: "pointer" }}
-            key={Data.drive}
-            onClick={(value) =>
-              typeof Data.directories !== "undefined" &&
-              Data.directories.length > 0
-                ? setNavigation(navigation.concat(Data.drive))
+            key={data.drive}
+            onClick={value =>
+              typeof data.directories !== "undefined" &&
+              data.directories.length > 0
+                ? setNavigation(navigation.concat(data.drive))
                 : {}
             }
-            label={Data.drive}
-            icon={"Files"}
-            value={Data.totalFiles}
+            label={data.drive}
+            icon={"files"}
+            value={data.totalFiles}
           />
         );
 
       case 1:
-        return Data.directories.map((card, index) => {
+        return data.directories.map((card, index) => {
           return (
             <Card
               style={
@@ -166,22 +185,26 @@ export default function Home() {
                   : {}
               }
               key={index}
-              onClick={(value) =>
+              onClick={value =>
                 typeof card.directories !== "undefined" &&
                 card.directories.length > 0
                   ? setNavigation(navigation.concat(value))
                   : {}
               }
               label={card.name}
-              icon={"Files"}
+              icon={
+                Object.keys(card.info).length > 1
+                  ? "files"
+                  : Object.keys(card.info)[0]
+              }
               value={card.numberOfFiles}
             />
           );
         });
 
       case 2:
-        return Data.directories
-          .filter((card) => card.name === navigation[1])[0]
+        return data.directories
+          .filter(card => card.name === navigation[1])[0]
           ?.directories.map((card, index) => {
             return (
               <Card
@@ -192,23 +215,27 @@ export default function Home() {
                     : {}
                 }
                 key={index}
-                onClick={(value) =>
+                onClick={value =>
                   typeof card.directories !== "undefined" &&
                   card.directories.length > 0
                     ? setNavigation(navigation.concat(value))
                     : {}
                 }
                 label={card.name}
-                icon={"Files"}
+                icon={
+                  Object.keys(card.info).length > 1
+                    ? "files"
+                    : Object.keys(card.info)[0]
+                }
                 value={card.numberOfFiles}
               />
             );
           });
 
       case 3:
-        return Data.directories
-          .filter((card) => card.name === navigation[1])[0]
-          ?.directories.filter((card) => card.name === navigation[2])[0]
+        return data.directories
+          .filter(card => card.name === navigation[1])[0]
+          ?.directories.filter(card => card.name === navigation[2])[0]
           ?.directories.map((card, index) => {
             return (
               <Card
@@ -219,32 +246,39 @@ export default function Home() {
                     : {}
                 }
                 key={index}
-                onClick={(value) =>
+                onClick={value =>
                   typeof card.directories !== "undefined" &&
                   card.directories.length > 0
                     ? setNavigation(navigation.concat(value))
                     : {}
                 }
                 label={card.name}
-                icon={"Files"}
+                icon={
+                  Object.keys(card.info).length > 1
+                    ? "files"
+                    : Object.keys(card.info)[0]
+                }
                 value={card.numberOfFiles}
               />
             );
           });
 
       default:
-        return files.map((card, index) => {
-          return (
-            <Card
-              style={{ cursor: "pointer" }}
-              key={index}
-              onClick={(value) => setNavigation(navigation.concat(value))}
-              label={card.label}
-              icon={card.icon}
-              value={card.value}
-            />
-          );
-        });
+        return (
+          <Card
+            style={{ cursor: "pointer" }}
+            key={data.drive}
+            onClick={value =>
+              typeof data.directories !== "undefined" &&
+              data.directories.length > 0
+                ? setNavigation(navigation.concat(data.drive))
+                : {}
+            }
+            label={data.drive}
+            icon={"Files"}
+            value={data.totalFiles}
+          />
+        );
     }
   };
 
@@ -261,13 +295,13 @@ export default function Home() {
         variant="permanent"
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
+          [classes.drawerClose]: !open
         })}
         classes={{
           paper: clsx({
             [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          }),
+            [classes.drawerClose]: !open
+          })
         }}
       >
         <div className={classes.toolbar}>
@@ -279,12 +313,12 @@ export default function Home() {
         <NavigationBar
           files={files}
           openSubMenu={openSubMenu}
-          setOpenSubMenu={(value) => setOpenSubMenu(value)}
+          setOpenSubMenu={value => setOpenSubMenu(value)}
           selectedItem={selectedItem}
-          setSelectedItem={(value) => setSelectedItem(value)}
+          setSelectedItem={value => setSelectedItem(value)}
           selectedSubMenuItem={selectedSubMenuItem}
-          setSubMenuSelectedItem={(value) => setSubMenuSelectedItem(value)}
-          setOpen={(open) => setOpen(open)}
+          setSubMenuSelectedItem={value => setSubMenuSelectedItem(value)}
+          setOpen={open => setOpen(open)}
         />
       </Drawer>
       <main className={classes.content}>
@@ -292,7 +326,7 @@ export default function Home() {
         <Container>
           <div className={classes.breadcrumb}>
             <BreadCrumb
-              handleClick={(index) => {
+              handleClick={index => {
                 return index === 0
                   ? setNavigation([])
                   : index - 1 === navigation.length
