@@ -14,6 +14,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { ChevronLeft, ChevronRight } from "@material-ui/icons";
 import Header from "../../ui/Header/Header";
 import NavigationBar from "../../ui/NavigationBar/NavigationBar";
+import Data from "../parse.json";
 
 const drawerWidth = 240;
 
@@ -90,41 +91,6 @@ export default function Home() {
         { label: "Document Files", icon: "Document", value: "21.2K" },
         { label: "Other Files", icon: "Other", value: "21.2K" },
       ],
-      //   directory: [
-      //     {
-      //       label: "Recycle bin",
-      //       icon: "Files",
-      //       value: "26.2K",
-      //       directory: [
-      //         { label: "Video Files", icon: "Video", value: "10.2K" },
-      //         { label: "Image Files", icon: "Image", value: "1.22K" },
-      //         { label: "Document Files", icon: "Document", value: "11.2K" },
-      //         { label: "Other Files", icon: "Other", value: "2.2K" },
-      //       ],
-      //     },
-      //     {
-      //       label: "Temp",
-      //       icon: "Files",
-      //       value: "21.2K",
-      //       directory: [
-      //         { label: "Video Files", icon: "Video", value: "21.2K" },
-      //         { label: "Image Files", icon: "Image", value: "21.2K" },
-      //         { label: "Document Files", icon: "Document", value: "21.2K" },
-      //         { label: "Other Files", icon: "Other", value: "21.2K" },
-      //       ],
-      //     },
-      //     {
-      //       label: "Bin",
-      //       icon: "Files",
-      //       value: "21.2K",
-      //       directory: [
-      //         { label: "Video Files", icon: "Video", value: "21.2K" },
-      //         { label: "Image Files", icon: "Image", value: "21.2K" },
-      //         { label: "Document Files", icon: "Document", value: "21.2K" },
-      //         { label: "Other Files", icon: "Other", value: "21.2K" },
-      //       ],
-      //     },
-      //   ],
     },
     {
       label: "E://",
@@ -170,65 +136,98 @@ export default function Home() {
 
   const renderCards = () => {
     const cardTree = navigation.length;
+
     switch (cardTree) {
       case 0:
-        return files.map((card, index) => {
+        return (
+          <Card
+            style={{ cursor: "pointer" }}
+            key={Data.drive}
+            onClick={(value) =>
+              typeof Data.directories !== "undefined" &&
+              Data.directories.length > 0
+                ? setNavigation(navigation.concat(Data.drive))
+                : {}
+            }
+            label={Data.drive}
+            icon={"Files"}
+            value={Data.totalFiles}
+          />
+        );
+
+      case 1:
+        return Data.directories.map((card, index) => {
           return (
             <Card
-              style={{ cursor: "pointer" }}
+              style={
+                typeof card.directories !== "undefined" &&
+                card.directories.length > 0
+                  ? { cursor: "pointer" }
+                  : {}
+              }
               key={index}
               onClick={(value) =>
-                typeof card.directory !== "undefined"
+                typeof card.directories !== "undefined" &&
+                card.directories.length > 0
                   ? setNavigation(navigation.concat(value))
                   : {}
               }
-              label={card.label}
-              icon={card.icon}
-              value={card.value}
+              label={card.name}
+              icon={"Files"}
+              value={card.numberOfFiles}
             />
           );
         });
 
-      case 1:
-        return files
-          .filter((file) => file.label === navigation[0])[0]
-          .directory.map((card, index) => {
+      case 2:
+        return Data.directories
+          .filter((card) => card.name === navigation[1])[0]
+          ?.directories.map((card, index) => {
             return (
               <Card
                 style={
-                  typeof card.directory !== "undefined"
+                  typeof card.directories !== "undefined" &&
+                  card.directories.length > 0
                     ? { cursor: "pointer" }
                     : {}
                 }
                 key={index}
                 onClick={(value) =>
-                  typeof card.directory !== "undefined"
+                  typeof card.directories !== "undefined" &&
+                  card.directories.length > 0
                     ? setNavigation(navigation.concat(value))
                     : {}
                 }
-                label={card.label}
-                icon={card.icon}
-                value={card.value}
+                label={card.name}
+                icon={"Files"}
+                value={card.numberOfFiles}
               />
             );
           });
 
-      case 2:
-        return files
-          .filter((file) => file.label === navigation[0])[0]
-          .directory.filter((file) => file.label === navigation[1])[0]
-          .directory.map((card, index) => {
+      case 3:
+        return Data.directories
+          .filter((card) => card.name === navigation[1])[0]
+          ?.directories.filter((card) => card.name === navigation[2])[0]
+          ?.directories.map((card, index) => {
             return (
               <Card
+                style={
+                  typeof card.directories !== "undefined" &&
+                  card.directories.length > 0
+                    ? { cursor: "pointer" }
+                    : {}
+                }
                 key={index}
                 onClick={(value) =>
-                  typeof card.directory !== "undefined"
+                  typeof card.directories !== "undefined" &&
+                  card.directories.length > 0
                     ? setNavigation(navigation.concat(value))
                     : {}
                 }
-                label={card.label}
-                icon={card.icon}
-                value={card.value}
+                label={card.name}
+                icon={"Files"}
+                value={card.numberOfFiles}
               />
             );
           });
