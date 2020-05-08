@@ -6,16 +6,16 @@ import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import Routes from "./Routes";
 import { Provider } from "react-redux";
 import configureStore from "./redux/store/configureStore";
-
+require("dotenv").config();
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#222a44",
+      main: "#222a44"
     },
     secondary: {
-      main: "#dc094e",
-    },
-  },
+      main: "#dc094e"
+    }
+  }
 });
 
 const store = configureStore();
