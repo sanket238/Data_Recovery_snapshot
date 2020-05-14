@@ -1,47 +1,50 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Collapse,
   ListItemText,
   ListItemIcon,
   ListItem,
-  List,
+  List
 } from "@material-ui/core";
 import {
   ExpandMore,
   NavigateNext,
-  Folder,
   Image,
   DevicesOther,
   VideoLibrary,
-  InsertDriveFile,
   Contacts,
   Person,
   ExitToApp,
   Home,
+  Folder,
+  Audiotrack,
+  Assignment,
+  Description,
+  PictureAsPdf
 } from "@material-ui/icons";
 import { withRouter } from "react-router-dom";
 import "./NavigationBar.css";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
-    display: "flex",
+    display: "flex"
   },
   icon: {
-    color: "#757575",
+    color: "#757575"
   },
   iconActive: {
-    color: "#5e7ff5",
+    color: "#5e7ff5"
   },
   text: {
     color: "#757575",
     fontWeight: 800,
-    fontSize: 16,
+    fontSize: 16
   },
   textActive: {
     color: "#222a44",
     fontWeight: 800,
-    fontSize: 16,
+    fontSize: 16
   },
   toolbar: {
     display: "flex",
@@ -49,23 +52,105 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "flex-end",
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
+    ...theme.mixins.toolbar
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(4),
-  },
+    padding: theme.spacing(4)
+  }
 }));
 
-const NavigationBar = (props) => {
+const NavigationBar = props => {
+  const [menu, setMenu] = useState([]);
+
   const classes = useStyles();
 
-  const images = {
-    Files: <Folder />,
-    Image: <Image />,
-    Others: <DevicesOther />,
-    Video: <VideoLibrary />,
-    Document: <InsertDriveFile />,
+  let images = {
+    files: <Folder />,
+    image: <Image style={{ color: "#7e5ffe" }} />,
+    audio: <Audiotrack style={{ color: "grey" }} />,
+    ppt: <Assignment style={{ color: "#ca4424" }} />,
+    word: <Description style={{ color: "#295491" }} />,
+    excel: <Description style={{ color: "#000" }} />,
+    pdf: <PictureAsPdf style={{ color: "#e71b23" }} />,
+    other: <DevicesOther style={{ color: "#000" }} />,
+    video: <VideoLibrary style={{ color: "#56ce55" }} />
+  };
+
+  const renderMenuIcon = (selectedItem, directory, isOpen) => {
+    return selectedItem === directory && isOpen ? (
+      <ExpandMore className={isOpen ? classes.iconActive : classes.icon} />
+    ) : (
+      <NavigateNext className={isOpen ? classes.iconActive : classes.icon} />
+    );
+  };
+
+  const renderSubmenu = (matchItem, directoryName, directories, isOpen) => {
+    return (
+      <Collapse
+        key={directoryName + Math.random()}
+        in={matchItem === directoryName && isOpen}
+        timeout="auto"
+        unmountOnExit
+      >
+        <List component="div" style={{ marginLeft: 10 }} disablePadding>
+          {directories &&
+            directories.length > 0 &&
+            directories.map((text, index) => (
+              <Fragment key={index}>
+                <ListItem
+                  style={{ whiteSpace: "normal" }}
+                  onClick={() => {
+                    if (text.directories.length > 0) {
+                      props.navigation(index + 1, text.name);
+                      props.setSubMenuSelectedItem(text.name);
+                      if (typeof menu[text.name] === "undefined") {
+                        setMenu(...menu, { [text.name]: true });
+                      } else if (menu[text.name] === false) {
+                        setMenu({ ...menu, [text.name]: true });
+                      } else {
+                        setMenu({ ...menu, [text.name]: false });
+                      }
+                    }
+                  }}
+                  button
+                  key={text.name}
+                >
+                  <ListItemIcon
+                    className={
+                      menu[text.name] ? classes.iconActive : classes.icon
+                    }
+                  >
+                    {Object.keys(text.info).length > 1
+                      ? images["files"]
+                      : images[Object.keys(text.info)[0]]}
+                  </ListItemIcon>
+                  <ListItemText
+                    disableTypography={true}
+                    className={
+                      menu[text.name] ? classes.textActive : classes.text
+                    }
+                    primary={text.name}
+                  />
+                  {text.directories.length > 0 &&
+                    renderMenuIcon(
+                      props.selectedSubMenuItem,
+                      text.name,
+                      menu[text.name]
+                    )}
+                </ListItem>
+                {text.directories.length > 0 &&
+                  renderSubmenu(
+                    text.name,
+                    text.name,
+                    text.directories,
+                    menu[text.name]
+                  )}
+              </Fragment>
+            ))}
+        </List>
+      </Collapse>
+    );
   };
 
   return (
@@ -93,87 +178,54 @@ const NavigationBar = (props) => {
           primary={"Home"}
         />
       </ListItem>
+
       <Fragment>
         <ListItem
+          style={{ whiteSpace: "normal" }}
           onClick={() => {
             props.setOpen(true);
-            props.setSelectedItem("D://");
+            setMenu([]);
+            props.navigation(0, props.data.drive);
+            props.setSelectedItem(props.data.drive);
             props.setOpenSubMenu(!props.openSubMenu);
           }}
           button
-          key={"D://"}
+          key={props.data.drive}
         >
           <ListItemIcon
             className={
-              props.selectedItem === "D://" ? classes.iconActive : classes.icon
+              props.selectedItem === props.data.drive
+                ? classes.iconActive
+                : classes.icon
             }
           >
-            {images["Files"]}
+            {images["files"]}
           </ListItemIcon>
           <ListItemText
             disableTypography={true}
             className={
-              props.selectedItem === "D://" ? classes.textActive : classes.text
+              props.selectedItem === props.data.drive
+                ? classes.textActive
+                : classes.text
             }
-            primary={"D://"}
+            primary={props.data.drive}
           />
-          {props.selectedItem === "D://" && props.openSubMenu ? (
-            <ExpandMore
-              className={
-                props.selectedItem === "D://"
-                  ? classes.iconActive
-                  : classes.icon
-              }
-            />
-          ) : (
-            <NavigateNext
-              className={
-                props.selectedItem === "D://"
-                  ? classes.iconActive
-                  : classes.icon
-              }
-            />
+          {renderMenuIcon(
+            props.selectedItem,
+            props.data.drive,
+            props.openSubMenu
           )}
         </ListItem>
-        <Collapse
-          in={props.selectedItem === "D://" && props.openSubMenu}
-          timeout="auto"
-          unmountOnExit
-        >
-          <List component="div" style={{ marginLeft: 30 }} disablePadding>
-            {["Video", "Image", "Document", "Others"].map((text, index) => (
-              <ListItem
-                onClick={() => {
-                  props.setSubMenuSelectedItem(text);
-                }}
-                button
-                key={text}
-              >
-                <ListItemIcon
-                  className={
-                    props.selectedSubMenuItem === text
-                      ? classes.iconActive
-                      : classes.icon
-                  }
-                >
-                  {images[text]}
-                </ListItemIcon>
-                <ListItemText
-                  disableTypography={true}
-                  className={
-                    props.selectedSubMenuItem === text
-                      ? classes.textActive
-                      : classes.text
-                  }
-                  primary={text}
-                />
-              </ListItem>
-            ))}
-          </List>
-        </Collapse>
+        {renderSubmenu(
+          props.selectedItem,
+          props.data.drive,
+          props.data?.directories,
+          props.openSubMenu
+        )}
       </Fragment>
       <ListItem
         onClick={() => {
+          setMenu([]);
           props.setOpen(true);
           props.setSelectedItem("Contact");
           props.setOpenSubMenu(!props.openSubMenu);
@@ -197,6 +249,7 @@ const NavigationBar = (props) => {
       </ListItem>
       <ListItem
         onClick={() => {
+          setMenu([]);
           props.setOpen(true);
           props.setSelectedItem("Profile");
           props.setOpenSubMenu(!props.openSubMenu);
