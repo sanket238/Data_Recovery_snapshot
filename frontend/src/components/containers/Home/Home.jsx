@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
     overflowX: "hidden",
     width: theme.spacing(7) + 1,
     [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9) + 1
+      width: theme.spacing(7) + 1
     }
   },
   toolbar: {
@@ -69,7 +69,7 @@ export default function Home() {
   const [openSubMenu, setOpenSubMenu] = React.useState(false);
   const [selectedItem, setSelectedItem] = React.useState("");
   const [selectedSubMenuItem, setSubMenuSelectedItem] = React.useState("");
-  const [error, setError] = React.useState(false);
+  const [, setError] = React.useState(false);
   const [data, setData] = React.useState([]);
 
   useEffect(() => {
@@ -150,6 +150,7 @@ export default function Home() {
 
   const handleDrawerClose = () => {
     setOpen(false);
+    setNavigation([]);
     setOpenSubMenu(false);
   };
 
@@ -319,6 +320,16 @@ export default function Home() {
           selectedSubMenuItem={selectedSubMenuItem}
           setSubMenuSelectedItem={value => setSubMenuSelectedItem(value)}
           setOpen={open => setOpen(open)}
+          data={data}
+          navigation={(index, data) => {
+            return navigation.includes(data)
+              ? index === 0
+                ? setNavigation([])
+                : setNavigation(
+                    navigation.splice(navigation.indexOf(data) - 1, 1)
+                  )
+              : setNavigation(navigation.concat(data));
+          }}
         />
       </Drawer>
       <main className={classes.content}>
