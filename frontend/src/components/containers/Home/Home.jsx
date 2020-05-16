@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import {
   Grid,
   Container,
@@ -8,13 +8,17 @@ import {
   IconButton
 } from "@material-ui/core";
 import Card from "../../ui/Card/Card";
+import { Card as MaterialCard } from "@material-ui/core";
 import BreadCrumb from "../../ui/BreadCrumb/BreadCrumb";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { ChevronLeft, ChevronRight } from "@material-ui/icons";
 import Header from "../../ui/Header/Header";
 import NavigationBar from "../../ui/NavigationBar/NavigationBar";
-
+import CommonChart from "../../charts/CommonChart/CommonChart";
+import PieChart from "../../charts/PieChart/PieChart";
+import Title from "../../ui/Title/Title";
+import WordTree from "../../charts/WordTree/WordTree";
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -144,6 +148,30 @@ export default function Home() {
     }
   ];
 
+  let chartData = [
+    { name: "Directory1", Files: "1000" },
+    { name: "New Folder", Files: "1500" },
+    { name: "Adobe", Files: "800" },
+    { name: "Downloads", Files: "400" },
+    { name: "Pictures", Files: "1800" }
+  ];
+
+  let PieChartData = [
+    ["Directory1", 1000],
+    ["New Folder", 1500],
+    ["Adobe", 800],
+    ["Downloads", 400],
+    ["Pictures", 1800]
+  ];
+
+  let PieChartSizeData = [
+    ["Directory1", 204],
+    ["New Folder", 5002.6],
+    ["Adobe", 802],
+    ["Downloads", 4000],
+    ["Pictures", 6500]
+  ];
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -152,6 +180,80 @@ export default function Home() {
     setOpen(false);
     setNavigation([]);
     setOpenSubMenu(false);
+  };
+
+  const renderCharts = () => {
+    const cardTree = navigation.length;
+    let Columns = [
+      { type: "string", label: "name" },
+      { type: "number", label: "value" }
+    ];
+
+    switch (cardTree) {
+      case 0:
+        return (
+          <Fragment>
+            <Grid xs={12} md={6} lg={6} sm={6} item>
+              <MaterialCard>
+                <div style={{ padding: 15 }}>
+                  <Title title="Files in Directories" />
+
+                  <CommonChart
+                    grid={false}
+                    chart={"BarChart"}
+                    data={chartData}
+                    labels={["Files"]}
+                    colors={["#192a56"]}
+                  />
+                </div>
+              </MaterialCard>
+            </Grid>
+            <Grid xs={12} md={6} lg={6} sm={6} item>
+              <MaterialCard>
+                <div style={{ padding: 15, minHeight: 337 }}>
+                  <Title title="Files in Directories by %" />
+                  <PieChart
+                    placeholder={false}
+                    emptyClassName={"m-t-40"}
+                    chartArea={{ left: 25, top: 15, right: 25, bottom: 15 }}
+                    rows={PieChartData}
+                    columns={Columns}
+                    chartType={"PieChart"}
+                    height={"270px"}
+                  />
+                </div>
+              </MaterialCard>
+            </Grid>
+            <Grid xs={12} md={6} lg={6} sm={6} item>
+              <MaterialCard>
+                <div style={{ padding: 15, minHeight: 337 }}>
+                  <Title title="Size of Directories(in MB)" />
+                  <PieChart
+                    placeholder={false}
+                    emptyClassName={"m-t-40"}
+                    chartArea={{ left: 25, top: 15, right: 25, bottom: 15 }}
+                    rows={PieChartSizeData}
+                    columns={Columns}
+                    chartType={"PieChart"}
+                    height={"270px"}
+                  />
+                </div>
+              </MaterialCard>
+            </Grid>
+            <Grid xs={12} md={6} lg={6} sm={6} item>
+              <MaterialCard>
+                <div style={{ padding: 15, maxHeight: 337 }}>
+                  <Title title="Directories Structure" />
+                  <WordTree />
+                </div>
+              </MaterialCard>
+            </Grid>
+          </Fragment>
+        );
+
+      default:
+        return;
+    }
   };
 
   const renderCards = () => {
@@ -349,6 +451,9 @@ export default function Home() {
           </div>
           <Grid container spacing={3} item>
             {renderCards()}
+          </Grid>
+          <Grid container style={{ marginTop: 25 }} spacing={3} item>
+            {renderCharts()}
           </Grid>
         </Container>
       </main>
