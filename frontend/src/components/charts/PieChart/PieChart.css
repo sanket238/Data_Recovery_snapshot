@@ -1,0 +1,21 @@
+.custom-charts .reactgooglegraph-4 {
+  height: 70% !important;
+}
+.goog-tooltip {
+  margin-left: -125px !important;
+  visibility: hidden !important;
+}
+.goog-tooltip div {
+  padding: 5px !important;
+  border-radius: 4px !important;
+  background: white !important;
+  border: 1px solid grey !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  margin: 8px;
+  font-family: Arial;
+}
+
+.google-visualization-tooltip {
+  pointer-events: none;
+}
