@@ -2,39 +2,12 @@ import * as React from "react";
 import { Chart } from "react-google-charts";
 import "../PieChart/PieChart.css";
 
-const COLORS = [
-  "#3c3568",
-  "#bc443b",
-  "#192a56",
-  "#334553",
-  "#f6ba62",
-  "#185e4b",
-  "#150a47",
-  "#d82f5a",
-  "#000133",
-  "#11887b",
-  "#044a05",
-  "#004953",
-  "#062e03",
-  "#7f4330",
-  "#420303",
-  "#980036",
-  "#9c004a",
-  "#490648",
-  "#76424e",
-  "#36013f",
-  "#36013f",
-  "#333333",
-  "#25342b",
-  "#171717"
-];
-
 class WordTree extends React.Component {
   render() {
     return (
       <Chart
         width={"500px"}
-        height={"300px"}
+        height={"270px"}
         chartType="WordTree"
         loader={<div>Loading Chart</div>}
         data={[
