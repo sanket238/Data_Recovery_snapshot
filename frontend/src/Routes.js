@@ -6,7 +6,7 @@ import ForgotPassword from "./components/containers/ForgotPassword/ForgotPasswor
 import App from "./App";
 
 function Routes() {
-  window.addEventListener("storage", (e) => {
+  window.addEventListener("storage", e => {
     if (!localStorage.getItem("username")) {
       window.location.reload();
     }
@@ -15,6 +15,7 @@ function Routes() {
     <BrowserRouter>
       <Switch>
         <Route exact path="/" component={App} />
+        <Route path="/profile" component={App} />
         <Route path="/signin" component={SignIn} />
         <Route path="/signup" component={SignUp} />
         <Route path="/forgot-password" component={ForgotPassword} />
