@@ -7,7 +7,7 @@ import {
   makeStyles,
   Menu,
   MenuItem,
-  Divider,
+  Divider
 } from "@material-ui/core";
 import clsx from "clsx";
 import { Menu as MenuIcon, AccountCircle } from "@material-ui/icons";
@@ -15,57 +15,57 @@ import { withRouter } from "react-router-dom";
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
-    display: "flex",
+    display: "flex"
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
+      duration: theme.transitions.duration.leavingScreen
+    })
   },
   appBarShift: {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+      duration: theme.transitions.duration.enteringScreen
+    })
   },
   menuButton: {
-    marginRight: 36,
+    marginRight: 36
   },
   headerClass: {
     display: "flex",
     width: "100%",
-    justifyContent: "space-between",
+    justifyContent: "space-between"
   },
   headerClassH6: {
     display: "flex",
     justifyContent: "center",
-    flexDirection: "column",
+    flexDirection: "column"
   },
   profileMenu: {
     fontWeight: "bold",
     fontSize: 16,
     textAlign: "center",
-    padding: 12,
+    padding: 12
   },
   hide: {
-    display: "none",
-  },
+    display: "none"
+  }
 }));
 
-const Header = (props) => {
+const Header = props => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
 
-  const handleProfileMenuOpen = (event) => {
+  const handleProfileMenuOpen = event => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -97,7 +97,15 @@ const Header = (props) => {
         </Typography>
       </div>
       <Divider />
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem
+        onClick={() => {
+          props.setNavigation(["Profile"]);
+          handleMenuClose();
+          props.history.push("/profile");
+        }}
+      >
+        My account
+      </MenuItem>
       <MenuItem
         onClick={() => {
           handleMenuClose();
@@ -115,7 +123,7 @@ const Header = (props) => {
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
-          [classes.appBarShift]: props.open,
+          [classes.appBarShift]: props.open
         })}
       >
         <Toolbar>
@@ -125,7 +133,7 @@ const Header = (props) => {
             onClick={props.handleDrawerOpen}
             edge="start"
             className={clsx(classes.menuButton, {
-              [classes.hide]: props.open,
+              [classes.hide]: props.open
             })}
           >
             <MenuIcon />
