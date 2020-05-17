@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Card as MaterialCard } from "@material-ui/core";
+import { Grid, Paper } from "@material-ui/core";
 import {
   VideoLibrary,
   Image,
@@ -39,7 +39,8 @@ const Card = props => {
 
   return (
     <Grid item xs={12} md={6} lg={3} sm={6}>
-      <MaterialCard
+      <Paper
+        elevation={3}
         style={props.style ? props.style : {}}
         onClick={() => props.onClick(props.label)}
         className="dashboard-card"
@@ -53,7 +54,7 @@ const Card = props => {
             <label className="card-label">{props.label}</label>
           </div>
         </div>
-      </MaterialCard>
+      </Paper>
     </Grid>
   );
 };
