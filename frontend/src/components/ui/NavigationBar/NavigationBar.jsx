@@ -184,6 +184,7 @@ const NavigationBar = props => {
           style={{ whiteSpace: "normal" }}
           onClick={() => {
             props.setOpen(true);
+            props.history.push("/");
             setMenu([]);
             props.navigation(0, props.data.drive);
             props.setSelectedItem(props.data.drive);
@@ -249,10 +250,10 @@ const NavigationBar = props => {
       </ListItem>
       <ListItem
         onClick={() => {
+          props.history.push("/profile");
           setMenu([]);
-          props.setOpen(true);
+          props.navigation("Profile", "Profile");
           props.setSelectedItem("Profile");
-          props.setOpenSubMenu(!props.openSubMenu);
         }}
         button
       >
