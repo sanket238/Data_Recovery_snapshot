@@ -1,24 +1,20 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Grid,
   Container,
   Divider,
   CssBaseline,
   Drawer,
   IconButton
 } from "@material-ui/core";
-import Card from "../../ui/Card/Card";
-import { Card as MaterialCard } from "@material-ui/core";
 import BreadCrumb from "../../ui/BreadCrumb/BreadCrumb";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { ChevronLeft, ChevronRight } from "@material-ui/icons";
 import Header from "../../ui/Header/Header";
 import NavigationBar from "../../ui/NavigationBar/NavigationBar";
-import CommonChart from "../../charts/CommonChart/CommonChart";
-import PieChart from "../../charts/PieChart/PieChart";
-import Title from "../../ui/Title/Title";
-import WordTree from "../../charts/WordTree/WordTree";
+import Dashboard from "../Dashboard/Dashboard";
+import { Switch, Route, withRouter } from "react-router-dom";
+import Profile from "../Profile/Profile";
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -65,7 +61,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Home() {
+const Home = props => {
   const [navigation, setNavigation] = useState([]);
   const classes = useStyles();
   const theme = useTheme();
@@ -148,30 +144,6 @@ export default function Home() {
     }
   ];
 
-  let chartData = [
-    { name: "Directory1", Files: "1000" },
-    { name: "New Folder", Files: "1500" },
-    { name: "Adobe", Files: "800" },
-    { name: "Downloads", Files: "400" },
-    { name: "Pictures", Files: "1800" }
-  ];
-
-  let PieChartData = [
-    ["Directory1", 1000],
-    ["New Folder", 1500],
-    ["Adobe", 800],
-    ["Downloads", 400],
-    ["Pictures", 1800]
-  ];
-
-  let PieChartSizeData = [
-    ["Directory1", 204],
-    ["New Folder", 5002.6],
-    ["Adobe", 802],
-    ["Downloads", 4000],
-    ["Pictures", 6500]
-  ];
-
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -182,214 +154,12 @@ export default function Home() {
     setOpenSubMenu(false);
   };
 
-  const renderCharts = () => {
-    const cardTree = navigation.length;
-    let Columns = [
-      { type: "string", label: "name" },
-      { type: "number", label: "value" }
-    ];
-
-    switch (cardTree) {
-      case 0:
-        return (
-          <Fragment>
-            <Grid xs={12} md={6} lg={6} sm={6} item>
-              <MaterialCard>
-                <div style={{ padding: 15 }}>
-                  <Title title="Files in Directories" />
-
-                  <CommonChart
-                    grid={false}
-                    chart={"BarChart"}
-                    data={chartData}
-                    labels={["Files"]}
-                    colors={["#192a56"]}
-                  />
-                </div>
-              </MaterialCard>
-            </Grid>
-            <Grid xs={12} md={6} lg={6} sm={6} item>
-              <MaterialCard>
-                <div style={{ padding: 15, minHeight: 337 }}>
-                  <Title title="Files in Directories by %" />
-                  <PieChart
-                    placeholder={false}
-                    emptyClassName={"m-t-40"}
-                    chartArea={{ left: 25, top: 15, right: 25, bottom: 15 }}
-                    rows={PieChartData}
-                    columns={Columns}
-                    chartType={"PieChart"}
-                    height={"270px"}
-                  />
-                </div>
-              </MaterialCard>
-            </Grid>
-            <Grid xs={12} md={6} lg={6} sm={6} item>
-              <MaterialCard>
-                <div style={{ padding: 15, minHeight: 337 }}>
-                  <Title title="Size of Directories(in MB)" />
-                  <PieChart
-                    placeholder={false}
-                    emptyClassName={"m-t-40"}
-                    chartArea={{ left: 25, top: 15, right: 25, bottom: 15 }}
-                    rows={PieChartSizeData}
-                    columns={Columns}
-                    chartType={"PieChart"}
-                    height={"270px"}
-                  />
-                </div>
-              </MaterialCard>
-            </Grid>
-            <Grid xs={12} md={6} lg={6} sm={6} item>
-              <MaterialCard>
-                <div style={{ padding: 15, maxHeight: 337 }}>
-                  <Title title="Directories Structure" />
-                  <WordTree />
-                </div>
-              </MaterialCard>
-            </Grid>
-          </Fragment>
-        );
-
-      default:
-        return;
-    }
-  };
-
-  const renderCards = () => {
-    const cardTree = navigation.length;
-
-    switch (cardTree) {
-      case 0:
-        return (
-          <Card
-            style={{ cursor: "pointer" }}
-            key={data.drive}
-            onClick={value =>
-              typeof data.directories !== "undefined" &&
-              data.directories.length > 0
-                ? setNavigation(navigation.concat(data.drive))
-                : {}
-            }
-            label={data.drive}
-            icon={"files"}
-            value={data.totalFiles}
-          />
-        );
-
-      case 1:
-        return data.directories.map((card, index) => {
-          return (
-            <Card
-              style={
-                typeof card.directories !== "undefined" &&
-                card.directories.length > 0
-                  ? { cursor: "pointer" }
-                  : {}
-              }
-              key={index}
-              onClick={value =>
-                typeof card.directories !== "undefined" &&
-                card.directories.length > 0
-                  ? setNavigation(navigation.concat(value))
-                  : {}
-              }
-              label={card.name}
-              icon={
-                Object.keys(card.info).length > 1
-                  ? "files"
-                  : Object.keys(card.info)[0]
-              }
-              value={card.numberOfFiles}
-            />
-          );
-        });
-
-      case 2:
-        return data.directories
-          .filter(card => card.name === navigation[1])[0]
-          ?.directories.map((card, index) => {
-            return (
-              <Card
-                style={
-                  typeof card.directories !== "undefined" &&
-                  card.directories.length > 0
-                    ? { cursor: "pointer" }
-                    : {}
-                }
-                key={index}
-                onClick={value =>
-                  typeof card.directories !== "undefined" &&
-                  card.directories.length > 0
-                    ? setNavigation(navigation.concat(value))
-                    : {}
-                }
-                label={card.name}
-                icon={
-                  Object.keys(card.info).length > 1
-                    ? "files"
-                    : Object.keys(card.info)[0]
-                }
-                value={card.numberOfFiles}
-              />
-            );
-          });
-
-      case 3:
-        return data.directories
-          .filter(card => card.name === navigation[1])[0]
-          ?.directories.filter(card => card.name === navigation[2])[0]
-          ?.directories.map((card, index) => {
-            return (
-              <Card
-                style={
-                  typeof card.directories !== "undefined" &&
-                  card.directories.length > 0
-                    ? { cursor: "pointer" }
-                    : {}
-                }
-                key={index}
-                onClick={value =>
-                  typeof card.directories !== "undefined" &&
-                  card.directories.length > 0
-                    ? setNavigation(navigation.concat(value))
-                    : {}
-                }
-                label={card.name}
-                icon={
-                  Object.keys(card.info).length > 1
-                    ? "files"
-                    : Object.keys(card.info)[0]
-                }
-                value={card.numberOfFiles}
-              />
-            );
-          });
-
-      default:
-        return (
-          <Card
-            style={{ cursor: "pointer" }}
-            key={data.drive}
-            onClick={value =>
-              typeof data.directories !== "undefined" &&
-              data.directories.length > 0
-                ? setNavigation(navigation.concat(data.drive))
-                : {}
-            }
-            label={data.drive}
-            icon={"Files"}
-            value={data.totalFiles}
-          />
-        );
-    }
-  };
-
   return (
     <div className={classes.root}>
       <CssBaseline />
       <Header
         open={open}
+        setNavigation={setNavigation}
         handleDrawerOpen={handleDrawerOpen}
         title={"Data Recovery"}
       />
@@ -424,7 +194,10 @@ export default function Home() {
           setOpen={open => setOpen(open)}
           data={data}
           navigation={(index, data) => {
-            return navigation.includes(data)
+            return typeof index === "string"
+              ? !navigation.includes(data) &&
+                  setNavigation(navigation.concat(data))
+              : navigation.includes(data)
               ? index === 0
                 ? setNavigation([])
                 : setNavigation(
@@ -441,7 +214,9 @@ export default function Home() {
             <BreadCrumb
               handleClick={index => {
                 return index === 0
-                  ? setNavigation([])
+                  ? (setNavigation([]),
+                    props.history.push("/"),
+                    setSelectedItem(""))
                   : index - 1 === navigation.length
                   ? null
                   : setNavigation(navigation.splice(index - 1, 1));
@@ -449,14 +224,26 @@ export default function Home() {
               data={navigation}
             />
           </div>
-          <Grid container spacing={3} item>
-            {renderCards()}
-          </Grid>
-          <Grid container style={{ marginTop: 25 }} spacing={3} item>
-            {renderCharts()}
-          </Grid>
+          <div>
+            <Switch>
+              <Route
+                path="/"
+                exact
+                component={() => (
+                  <Dashboard
+                    data={data}
+                    navigation={navigation}
+                    setNavigation={setNavigation}
+                  />
+                )}
+              />
+              <Route path="/profile" exact component={() => <Profile />} />
+            </Switch>
+          </div>
         </Container>
       </main>
     </div>
   );
-}
+};
+
+export default withRouter(Home);
