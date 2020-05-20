@@ -12,6 +12,7 @@ import {
   CartesianGrid
 } from "recharts";
 import "./CommonChart.css";
+import { formatBytes } from "../../../utils/utils";
 
 const CommonChart = props => {
   const data = props.data === undefined ? [] : props.data;
@@ -46,7 +47,9 @@ const CommonChart = props => {
                     {item.name}:{" "}
                   </span>
                   <span style={{ color: item.color, fontWeight: "bold" }}>
-                    {item.value}
+                    {props.format === true
+                      ? formatBytes(item.value)
+                      : item.value}
                   </span>
                   <br />
                 </div>
@@ -95,7 +98,11 @@ const CommonChart = props => {
 
             <XAxis hide={false} dataKey={props.axis ? props.axis : "name"} />
 
-            <YAxis />
+            <YAxis
+              tickFormatter={tick => {
+                return props.format ? formatBytes(tick) : tick;
+              }}
+            />
             <Tooltip content={<CustomTooltip />} />
             <Legend
               layout={props.legendLayout ? props.legendLayout : "horizontal"}

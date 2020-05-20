@@ -96,6 +96,8 @@ class PieChart extends React.Component {
           generateTooltip:
             this.props.generateTooltip === true
               ? (row, size, value) => {
+                  console.log(size);
+                  console.log(this.props.rows[row][0]);
                   return (
                     '<div style="background:#fff; padding:5px 10px 5px 10px; border:1px solid grey; font-size:16px"><b>' +
                     this.props.rows[row][0] +
