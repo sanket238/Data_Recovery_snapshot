@@ -5,8 +5,53 @@ import CommonChart from "../../charts/CommonChart/CommonChart";
 import PieChart from "../../charts/PieChart/PieChart";
 import Title from "../../ui/Title/Title";
 import WordTree from "../../charts/WordTree/WordTree";
+import MaterialTable from "material-table";
+import { forwardRef } from "react";
+
+import AddBox from "@material-ui/icons/AddBox";
+import ArrowDownward from "@material-ui/icons/ArrowDownward";
+import Check from "@material-ui/icons/Check";
+import ChevronLeft from "@material-ui/icons/ChevronLeft";
+import ChevronRight from "@material-ui/icons/ChevronRight";
+import Clear from "@material-ui/icons/Clear";
+import DeleteOutline from "@material-ui/icons/DeleteOutline";
+import Edit from "@material-ui/icons/Edit";
+import FilterList from "@material-ui/icons/FilterList";
+import FirstPage from "@material-ui/icons/FirstPage";
+import LastPage from "@material-ui/icons/LastPage";
+import Remove from "@material-ui/icons/Remove";
+import SaveAlt from "@material-ui/icons/SaveAlt";
+import Search from "@material-ui/icons/Search";
+import ViewColumn from "@material-ui/icons/ViewColumn";
+import { formatBytes } from "../../../utils/utils";
+
+const tableIcons = {
+  Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+  Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+  Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+  DetailPanel: forwardRef((props, ref) => (
+    <ChevronRight {...props} ref={ref} />
+  )),
+  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+  Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+  PreviousPage: forwardRef((props, ref) => (
+    <ChevronLeft {...props} ref={ref} />
+  )),
+  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+  SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
+  ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
+  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+};
 
 const Dashboard = props => {
+  const [selectedTableCard, setSelectedTableCard] = React.useState("");
+
   let chartData = [
     { name: "Directory1", Files: "1000" },
     { name: "New Folder", Files: "1500" },
@@ -36,6 +81,12 @@ const Dashboard = props => {
     let Columns = [
       { type: "string", label: "name" },
       { type: "number", label: "value" }
+    ];
+
+    let FormattedColumns = [
+      { type: "string", label: "name" },
+      { type: "number", label: "value" },
+      { type: "string", role: "tooltip" }
     ];
 
     switch (cardTree) {
@@ -95,6 +146,173 @@ const Dashboard = props => {
                   <Title title="Directories Structure" />
                   <WordTree />
                 </div>
+              </Paper>
+            </Grid>
+          </Fragment>
+        );
+
+      case 1:
+        let datafiles = {};
+        let dirsData = {};
+
+        props.data.directories.map(dir => {
+          let fileList = {};
+          dir.directories.map(data => {
+            fileList[data.name] = {
+              name: data.name,
+              files: data.numberOfFiles,
+              size: data.totalSize
+            };
+            let field = datafiles[data.name];
+
+            typeof field === "undefined"
+              ? (datafiles[data.name] = {
+                  name: data.name,
+                  files: data.numberOfFiles,
+                  size: data.totalSize
+                })
+              : (datafiles[data.name] = {
+                  name: field.name,
+                  files: field.files + data.numberOfFiles,
+                  size: field.size + data.totalSize
+                });
+          });
+          dirsData[dir.name] = fileList;
+        });
+
+        const dirChartData = Object.values(datafiles).map(data => {
+          return { name: data.name, Files: data.files };
+        });
+
+        const dirChartDatabyPerc = Object.values(datafiles).map(data => {
+          return [data.name, data.files];
+        });
+
+        const dirSizeData = Object.values(datafiles).map(data => {
+          return { name: data.name, Files: data.size };
+        });
+
+        const dirSizeDatabyPerc = Object.values(datafiles).map(data => {
+          return [data.name, data.size, formatBytes(data.size)];
+        });
+        return (
+          <Fragment>
+            <Grid xs={12} md={6} lg={6} sm={6} item>
+              <Paper elevation={3}>
+                <div style={{ padding: 15 }}>
+                  <Title title="Number of Files By File Type" />
+                  <CommonChart
+                    grid={false}
+                    chart={"BarChart"}
+                    data={dirChartData}
+                    labels={["Files"]}
+                    colors={["#192a56"]}
+                  />
+                </div>
+              </Paper>
+            </Grid>
+            <Grid xs={12} md={6} lg={6} sm={6} item>
+              <Paper elevation={3}>
+                <div style={{ padding: 15, minHeight: 337 }}>
+                  <Title title="Number of Files By File Type By %" />
+                  <PieChart
+                    placeholder={false}
+                    emptyClassName={"m-t-40"}
+                    chartArea={{ left: 25, top: 15, right: 25, bottom: 15 }}
+                    rows={dirChartDatabyPerc}
+                    columns={Columns}
+                    chartType={"PieChart"}
+                    height={"270px"}
+                  />
+                </div>
+              </Paper>
+            </Grid>
+
+            <Grid xs={12} md={6} lg={6} sm={6} item>
+              <Paper elevation={3}>
+                <div style={{ padding: 15 }}>
+                  <Title title="Size of Directories(in MB) By File Type" />
+                  <CommonChart
+                    grid={false}
+                    chart={"BarChart"}
+                    data={dirSizeData}
+                    format={true}
+                    labels={["Files"]}
+                    colors={["#192a56"]}
+                  />
+                </div>
+              </Paper>
+            </Grid>
+            <Grid xs={12} md={6} lg={6} sm={6} item>
+              <Paper elevation={3}>
+                <div style={{ padding: 15, minHeight: 337 }}>
+                  <Title title="Size of Directories(in MB) By File Type By %" />
+                  <PieChart
+                    generateTooltip={true}
+                    placeholder={false}
+                    emptyClassName={"m-t-40"}
+                    chartArea={{ left: 25, top: 15, right: 25, bottom: 15 }}
+                    rows={dirSizeDatabyPerc}
+                    columns={FormattedColumns}
+                    chartType={"PieChart"}
+                    height={"270px"}
+                  />
+                </div>
+              </Paper>
+            </Grid>
+          </Fragment>
+        );
+
+      case 2:
+        const dir = props.data.directories
+          .filter(directory => directory.name === props.navigation[1])[0]
+          .directories.filter(dir =>
+            selectedTableCard !== "" ? dir.name === selectedTableCard : true
+          )
+          .map(files => {
+            return files.files;
+          });
+        const singleArray = dir.flat(1);
+        const column = [
+          { title: "Name", field: "name" },
+          {
+            title: "Size",
+            field: "size",
+            render: rowData => formatBytes(rowData.size)
+          },
+          {
+            title: "Date",
+            field: "date",
+            render: rowData => rowData.date + " " + rowData.time
+          }
+        ];
+
+        const data = singleArray.map(data => {
+          return {
+            name: data.name,
+            size: data.size,
+            date: data.date,
+            time: data.time
+          };
+        });
+        return (
+          <Fragment>
+            <Grid xs={12} md={6} lg={6} sm={6} item>
+              <Paper elevation={3}>
+                <MaterialTable
+                  icons={tableIcons}
+                  title={
+                    <Title
+                      title={
+                        selectedTableCard === ""
+                          ? "All Files"
+                          : selectedTableCard
+                      }
+                    />
+                  }
+                  columns={column}
+                  data={data}
+                />
               </Paper>
             </Grid>
           </Fragment>
@@ -171,7 +389,7 @@ const Dashboard = props => {
                   typeof card.directories !== "undefined" &&
                   card.directories.length > 0
                     ? props.setNavigation(props.navigation.concat(value))
-                    : {}
+                    : setSelectedTableCard(value)
                 }
                 label={card.name}
                 icon={
@@ -198,12 +416,12 @@ const Dashboard = props => {
                     : {}
                 }
                 key={index}
-                onClick={value =>
+                onClick={value => {
                   typeof card.directories !== "undefined" &&
                   card.directories.length > 0
                     ? props.setNavigation(props.navigation.concat(value))
-                    : {}
-                }
+                    : setSelectedTableCard(value);
+                }}
                 label={card.name}
                 icon={
                   Object.keys(card.info).length > 1
