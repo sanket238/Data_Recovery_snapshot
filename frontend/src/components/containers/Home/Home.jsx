@@ -14,6 +14,7 @@ import Header from "../../ui/Header/Header";
 import NavigationBar from "../../ui/NavigationBar/NavigationBar";
 import Dashboard from "../Dashboard/Dashboard";
 import { Switch, Route, withRouter } from "react-router-dom";
+import File from "./parse.json";
 import Profile from "../Profile/Profile";
 const drawerWidth = 240;
 
@@ -217,7 +218,7 @@ const Home = props => {
                   ? (setNavigation([]),
                     props.history.push("/"),
                     setSelectedItem(""))
-                  : index - 1 === navigation.length
+                  : index === navigation.length
                   ? null
                   : setNavigation(navigation.splice(index - 1, 1));
               }}
