@@ -83,7 +83,7 @@ const Home = props => {
     })
       .then(response => response.json())
       .then(data => {
-        setData(data);
+        setData(File);
       })
       .catch(error => {
         setData([]);
