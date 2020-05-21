@@ -49,6 +49,12 @@ const Card = props => {
           <div className={classNames[props.icon]}>{images[props.icon]}</div>
           <div className="card-number">
             <label className="card-number-label">{props.value}</label>
+            <div style={{ fontSize: 18, fontWeight: "bold", color: "grey" }}>
+              Files
+            </div>
+            <div style={{ fontSize: 18, fontWeight: "bold", color: "grey" }}>
+              ( {props.directories} Directories )
+            </div>
           </div>
           <div>
             <label className="card-label">{props.label}</label>
