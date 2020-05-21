@@ -194,6 +194,8 @@ const Home = props => {
           setSubMenuSelectedItem={value => setSubMenuSelectedItem(value)}
           setOpen={open => setOpen(open)}
           data={data}
+          setNavigation={data => setNavigation(data)}
+          navigationData={navigation}
           navigation={(index, data) => {
             return typeof index === "string"
               ? !navigation.includes(data) &&
