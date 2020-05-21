@@ -7,7 +7,6 @@ import Title from "../../ui/Title/Title";
 import WordTree from "../../charts/WordTree/WordTree";
 import MaterialTable from "material-table";
 import { forwardRef } from "react";
-
 import AddBox from "@material-ui/icons/AddBox";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import Check from "@material-ui/icons/Check";
@@ -24,6 +23,7 @@ import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 import { formatBytes } from "../../../utils/utils";
+import Menu from "../../ui/Menu/Menu";
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -51,6 +51,7 @@ const tableIcons = {
 
 const Dashboard = props => {
   const [selectedTableCard, setSelectedTableCard] = React.useState("");
+  const [filterItem, setFilterItem] = React.useState("All Directories");
 
   let chartData = [
     { name: "Directory1", Files: "1000" },
@@ -155,30 +156,34 @@ const Dashboard = props => {
         let datafiles = {};
         let dirsData = {};
 
-        props.data.directories.map(dir => {
-          let fileList = {};
-          dir.directories.map(data => {
-            fileList[data.name] = {
-              name: data.name,
-              files: data.numberOfFiles,
-              size: data.totalSize
-            };
-            let field = datafiles[data.name];
+        props.data.directories
+          .filter(dir =>
+            filterItem === "All Directories" ? true : dir.name === filterItem
+          )
+          .map(dir => {
+            let fileList = {};
+            dir.directories.map(data => {
+              fileList[data.name] = {
+                name: data.name,
+                files: data.numberOfFiles,
+                size: data.totalSize
+              };
+              let field = datafiles[data.name];
 
-            typeof field === "undefined"
-              ? (datafiles[data.name] = {
-                  name: data.name,
-                  files: data.numberOfFiles,
-                  size: data.totalSize
-                })
-              : (datafiles[data.name] = {
-                  name: field.name,
-                  files: field.files + data.numberOfFiles,
-                  size: field.size + data.totalSize
-                });
+              typeof field === "undefined"
+                ? (datafiles[data.name] = {
+                    name: data.name,
+                    files: data.numberOfFiles,
+                    size: data.totalSize
+                  })
+                : (datafiles[data.name] = {
+                    name: field.name,
+                    files: field.files + data.numberOfFiles,
+                    size: field.size + data.totalSize
+                  });
+            });
+            dirsData[dir.name] = fileList;
           });
-          dirsData[dir.name] = fileList;
-        });
 
         const dirChartData = Object.values(datafiles).map(data => {
           return { name: data.name, Files: data.files };
@@ -195,12 +200,28 @@ const Dashboard = props => {
         const dirSizeDatabyPerc = Object.values(datafiles).map(data => {
           return [data.name, data.size, formatBytes(data.size)];
         });
+
+        const dirList = props.data.directories.map(dir => dir.name);
+
         return (
           <Fragment>
+            <div style={{ display: "flex", width: "100%", padding: 15 }}>
+              <Title
+                title={
+                  dirList.length > 1 ? `Overview of ${filterItem}` : "Overview"
+                }
+              />
+              {dirList.length > 1 ? (
+                <Menu
+                  list={[...dirList, "All Directories"]}
+                  setFilterItem={setFilterItem}
+                />
+              ) : null}
+            </div>
             <Grid xs={12} md={6} lg={6} sm={6} item>
               <Paper elevation={3}>
                 <div style={{ padding: 15 }}>
-                  <Title title="Number of Files By File Type" />
+                  <Title title="Total Number of Files By File Type" />
                   <CommonChart
                     grid={false}
                     chart={"BarChart"}
@@ -214,7 +235,7 @@ const Dashboard = props => {
             <Grid xs={12} md={6} lg={6} sm={6} item>
               <Paper elevation={3}>
                 <div style={{ padding: 15, minHeight: 337 }}>
-                  <Title title="Number of Files By File Type By %" />
+                  <Title title="Total Number of Files By File Type By %" />
                   <PieChart
                     placeholder={false}
                     emptyClassName={"m-t-40"}
@@ -231,7 +252,7 @@ const Dashboard = props => {
             <Grid xs={12} md={6} lg={6} sm={6} item>
               <Paper elevation={3}>
                 <div style={{ padding: 15 }}>
-                  <Title title="Size of Directories(in MB) By File Type" />
+                  <Title title="Total Size of Directories(in MB) By File Type" />
                   <CommonChart
                     grid={false}
                     chart={"BarChart"}
@@ -246,7 +267,7 @@ const Dashboard = props => {
             <Grid xs={12} md={6} lg={6} sm={6} item>
               <Paper elevation={3}>
                 <div style={{ padding: 15, minHeight: 337 }}>
-                  <Title title="Size of Directories(in MB) By File Type By %" />
+                  <Title title="Total Size of Directories(in MB) By File Type By %" />
                   <PieChart
                     generateTooltip={true}
                     placeholder={false}
@@ -264,6 +285,12 @@ const Dashboard = props => {
         );
 
       case 2:
+        const level2PieChartFiles = props.data.directories
+          .filter(directory => directory.name === props.navigation[1])[0]
+          .directories.map(files => {
+            return [files.name, files.numberOfFiles];
+          });
+
         const dir = props.data.directories
           .filter(directory => directory.name === props.navigation[1])[0]
           .directories.filter(dir =>
@@ -299,20 +326,39 @@ const Dashboard = props => {
           <Fragment>
             <Grid xs={12} md={6} lg={6} sm={6} item>
               <Paper elevation={3}>
-                <MaterialTable
-                  icons={tableIcons}
-                  title={
-                    <Title
-                      title={
-                        selectedTableCard === ""
-                          ? "All Files"
-                          : selectedTableCard
-                      }
-                    />
-                  }
-                  columns={column}
-                  data={data}
-                />
+                <div style={{ maxHeight: 440, overflowY: "auto" }}>
+                  <MaterialTable
+                    icons={tableIcons}
+                    title={
+                      <Title
+                        title={
+                          selectedTableCard === ""
+                            ? "All Files"
+                            : selectedTableCard
+                        }
+                      />
+                    }
+                    columns={column}
+                    data={data}
+                  />
+                </div>
+              </Paper>
+            </Grid>
+            <Grid xs={12} md={6} lg={6} sm={6} item>
+              <Paper elevation={3}>
+                <div style={{ padding: 15, minHeight: 440 }}>
+                  <Title title="Size of Directories(in MB) By File Type By %" />
+                  <PieChart
+                    generateTooltip={true}
+                    placeholder={false}
+                    emptyClassName={"m-t-40"}
+                    chartArea={{ left: 25, top: 15, right: 25, bottom: 15 }}
+                    rows={level2PieChartFiles}
+                    columns={Columns}
+                    chartType={"PieChart"}
+                    height={"270px"}
+                  />
+                </div>
               </Paper>
             </Grid>
           </Fragment>
@@ -325,7 +371,6 @@ const Dashboard = props => {
 
   const renderCards = () => {
     const cardTree = props.navigation.length;
-
     switch (cardTree) {
       case 0:
         return (
@@ -340,6 +385,11 @@ const Dashboard = props => {
             }
             label={props.data.drive}
             icon={"files"}
+            directories={
+              typeof props.data.directories !== "undefined"
+                ? props.data.directories.length
+                : 0
+            }
             value={props.data.totalFiles}
           />
         );
@@ -366,6 +416,11 @@ const Dashboard = props => {
                 Object.keys(card.info).length > 1
                   ? "files"
                   : Object.keys(card.info)[0]
+              }
+              directories={
+                typeof card.directories !== "undefined"
+                  ? card.directories.length
+                  : 0
               }
               value={card.numberOfFiles}
             />
@@ -396,6 +451,11 @@ const Dashboard = props => {
                   Object.keys(card.info).length > 1
                     ? "files"
                     : Object.keys(card.info)[0]
+                }
+                directories={
+                  typeof card.directories !== "undefined"
+                    ? card.directories.length
+                    : 0
                 }
                 value={card.numberOfFiles}
               />
@@ -428,6 +488,11 @@ const Dashboard = props => {
                     ? "files"
                     : Object.keys(card.info)[0]
                 }
+                directories={
+                  typeof card.directories !== "undefined"
+                    ? card.directories.length
+                    : 0
+                }
                 value={card.numberOfFiles}
               />
             );
@@ -446,6 +511,11 @@ const Dashboard = props => {
             }
             label={props.data.drive}
             icon={"Files"}
+            directories={
+              typeof props.data.directories !== "undefined"
+                ? props.data.directories.length
+                : 0
+            }
             value={props.data.totalFiles}
           />
         );
