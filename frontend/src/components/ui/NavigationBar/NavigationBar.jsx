@@ -102,10 +102,19 @@ const NavigationBar = props => {
                   style={{ whiteSpace: "normal" }}
                   onClick={() => {
                     if (text.directories.length > 0) {
-                      props.navigation(index + 1, text.name);
+                      const arrayLength = text.path.split(
+                        props.navigationData[0]
+                      );
+                      if (props.navigationData.length !== arrayLength.length) {
+                        props.navigation(arrayLength.length, text.name);
+                      } else {
+                        let modified = props.navigationData;
+                        modified[modified.length - 1] = text.name;
+                        props.setNavigation(modified);
+                      }
                       props.setSubMenuSelectedItem(text.name);
                       if (typeof menu[text.name] === "undefined") {
-                        setMenu(...menu, { [text.name]: true });
+                        setMenu({ [text.name]: true });
                       } else if (menu[text.name] === false) {
                         setMenu({ ...menu, [text.name]: true });
                       } else {
@@ -157,8 +166,9 @@ const NavigationBar = props => {
     <List>
       <ListItem
         onClick={() => {
-          props.setOpen(true);
           props.setSelectedItem("Home");
+          props.setNavigation([]);
+          props.history.push("/");
           props.setOpenSubMenu(!props.openSubMenu);
         }}
         button
@@ -184,11 +194,11 @@ const NavigationBar = props => {
           style={{ whiteSpace: "normal" }}
           onClick={() => {
             props.setOpen(true);
-            props.history.push("/");
             setMenu([]);
-            props.navigation(0, props.data.drive);
+            props.setNavigation([props.data.drive]);
             props.setSelectedItem(props.data.drive);
             props.setOpenSubMenu(!props.openSubMenu);
+            props.history.push("/");
           }}
           button
           key={props.data.drive}
@@ -227,7 +237,6 @@ const NavigationBar = props => {
       <ListItem
         onClick={() => {
           setMenu([]);
-          props.setOpen(true);
           props.setSelectedItem("Contact");
           props.setOpenSubMenu(!props.openSubMenu);
         }}
@@ -252,7 +261,7 @@ const NavigationBar = props => {
         onClick={() => {
           props.history.push("/profile");
           setMenu([]);
-          props.navigation("Profile", "Profile");
+          props.setNavigation(["Profile"]);
           props.setSelectedItem("Profile");
         }}
         button
@@ -276,7 +285,6 @@ const NavigationBar = props => {
         onClick={() => {
           localStorage.setItem("isLoggedIn", false);
           props.history.push("/signin");
-          props.setOpen(true);
           props.setSelectedItem("Logout");
           props.setOpenSubMenu(!props.openSubMenu);
         }}
