@@ -53,30 +53,6 @@ const Dashboard = props => {
   const [selectedTableCard, setSelectedTableCard] = React.useState("");
   const [filterItem, setFilterItem] = React.useState("All Directories");
 
-  let chartData = [
-    { name: "Directory1", Files: "1000" },
-    { name: "New Folder", Files: "1500" },
-    { name: "Adobe", Files: "800" },
-    { name: "Downloads", Files: "400" },
-    { name: "Pictures", Files: "1800" }
-  ];
-
-  let PieChartData = [
-    ["Directory1", 1000],
-    ["New Folder", 1500],
-    ["Adobe", 800],
-    ["Downloads", 400],
-    ["Pictures", 1800]
-  ];
-
-  let PieChartSizeData = [
-    ["Directory1", 204],
-    ["New Folder", 5002.6],
-    ["Adobe", 802],
-    ["Downloads", 4000],
-    ["Pictures", 6500]
-  ];
-
   const renderCharts = () => {
     const cardTree = props.navigation.length;
     let Columns = [
@@ -92,17 +68,76 @@ const Dashboard = props => {
 
     switch (cardTree) {
       case 0:
+        let totaldatafiles = {};
+        let totaldirsData = {};
+        let words = [["Phrases"]];
+        typeof props.data.directories !== "undefined" &&
+          props.data.directories.map(dir => {
+            let fileList = {};
+            words.push([
+              "/ " + props.data.drive + " " + dir.name.replace(/ /g, "")
+            ]);
+            dir.directories.map(data => {
+              words.push([
+                "/ " +
+                  props.data.drive +
+                  " " +
+                  dir.name.replace(/ /g, "") +
+                  " " +
+                  data.name.replace(/ /g, "")
+              ]);
+              fileList[data.name] = {
+                name: data.name,
+                files: data.numberOfFiles,
+                size: data.totalSize
+              };
+              let field = totaldatafiles[data.name];
+
+              typeof field === "undefined"
+                ? (totaldatafiles[data.name] = {
+                    name: data.name,
+                    files: data.numberOfFiles,
+                    size: data.totalSize
+                  })
+                : (totaldatafiles[data.name] = {
+                    name: field.name,
+                    files: field.files + data.numberOfFiles,
+                    size: field.size + data.totalSize
+                  });
+            });
+            totaldirsData[dir.name] = fileList;
+          });
+
+        const totaldirChartData = Object.values(totaldatafiles).map(data => {
+          return { name: data.name, Files: data.files };
+        });
+
+        const totaldirChartDatabyPerc = Object.values(totaldatafiles).map(
+          data => {
+            return [data.name, data.files];
+          }
+        );
+
+        const totaldirSizeData = Object.values(totaldatafiles).map(data => {
+          return { name: data.name, Files: data.size };
+        });
+
+        const totaldirSizeDatabyPerc = Object.values(totaldatafiles).map(
+          data => {
+            return [data.name, data.size, formatBytes(data.size)];
+          }
+        );
+
         return (
           <Fragment>
             <Grid xs={12} md={6} lg={6} sm={6} item>
               <Paper elevation={3}>
                 <div style={{ padding: 15 }}>
-                  <Title title="Files in Directories" />
-
+                  <Title title="Total Number of Files By File Type" />
                   <CommonChart
                     grid={false}
                     chart={"BarChart"}
-                    data={chartData}
+                    data={totaldirChartData}
                     labels={["Files"]}
                     colors={["#192a56"]}
                   />
@@ -112,15 +147,31 @@ const Dashboard = props => {
             <Grid xs={12} md={6} lg={6} sm={6} item>
               <Paper elevation={3}>
                 <div style={{ padding: 15, minHeight: 337 }}>
-                  <Title title="Files in Directories by %" />
+                  <Title title="Total Number of Files By File Type By %" />
                   <PieChart
                     placeholder={false}
                     emptyClassName={"m-t-40"}
                     chartArea={{ left: 25, top: 15, right: 25, bottom: 15 }}
-                    rows={PieChartData}
+                    rows={totaldirChartDatabyPerc}
                     columns={Columns}
                     chartType={"PieChart"}
                     height={"270px"}
+                  />
+                </div>
+              </Paper>
+            </Grid>
+
+            <Grid xs={12} md={6} lg={6} sm={6} item>
+              <Paper elevation={3}>
+                <div style={{ padding: 15 }}>
+                  <Title title="Total Size of Directories(in MB) By File Type" />
+                  <CommonChart
+                    grid={false}
+                    chart={"BarChart"}
+                    data={totaldirSizeData}
+                    format={true}
+                    labels={["Files"]}
+                    colors={["#192a56"]}
                   />
                 </div>
               </Paper>
@@ -128,13 +179,14 @@ const Dashboard = props => {
             <Grid xs={12} md={6} lg={6} sm={6} item>
               <Paper elevation={3}>
                 <div style={{ padding: 15, minHeight: 337 }}>
-                  <Title title="Size of Directories(in MB)" />
+                  <Title title="Total Size of Directories(in MB) By File Type By %" />
                   <PieChart
+                    generateTooltip={true}
                     placeholder={false}
                     emptyClassName={"m-t-40"}
                     chartArea={{ left: 25, top: 15, right: 25, bottom: 15 }}
-                    rows={PieChartSizeData}
-                    columns={Columns}
+                    rows={totaldirSizeDatabyPerc}
+                    columns={FormattedColumns}
                     chartType={"PieChart"}
                     height={"270px"}
                   />
@@ -143,9 +195,9 @@ const Dashboard = props => {
             </Grid>
             <Grid xs={12} md={6} lg={6} sm={6} item>
               <Paper elevation={3}>
-                <div style={{ padding: 15, maxHeight: 337 }}>
+                <div style={{ padding: 15, maxHeight: 337, minHeight: 337 }}>
                   <Title title="Directories Structure" />
-                  <WordTree />
+                  <WordTree data={words} current={"/"} />
                 </div>
               </Paper>
             </Grid>
