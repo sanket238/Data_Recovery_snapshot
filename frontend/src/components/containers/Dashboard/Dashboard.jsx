@@ -345,9 +345,9 @@ const Dashboard = props => {
 
         const dir = props.data.directories
           .filter(directory => directory.name === props.navigation[1])[0]
-          .directories.filter(dir =>
-            selectedTableCard !== "" ? dir.name === selectedTableCard : true
-          )
+          .directories // .directories.filter(dir =>
+          //   selectedTableCard !== "" ? dir.name === selectedTableCard : true
+          // )
           .map(files => {
             return files.files;
           });
@@ -384,9 +384,10 @@ const Dashboard = props => {
                     title={
                       <Title
                         title={
-                          selectedTableCard === ""
-                            ? "All Files"
-                            : selectedTableCard
+                          "All Files"
+                          // selectedTableCard === ""
+                          //   ? "All Files"
+                          //   : selectedTableCard
                         }
                       />
                     }
