@@ -59,3 +59,5 @@ class DataView(APIView):
 class ProfileView(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated, IsActive)
     serializer_class = UserSerializer
+    def get_object(self):
+        return self.request.user

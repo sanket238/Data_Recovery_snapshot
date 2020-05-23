@@ -8,6 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = get_user_model()
         read_only_fields = ("created_at", "updated_at", "last_login", "bio", "is_email_verified", "avatar", "id")
         exclude = ["is_staff", "is_superuser", "is_active", "groups", "user_permissions"]
+        extra_kwargs = {"password": {"write_only": True}}
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
