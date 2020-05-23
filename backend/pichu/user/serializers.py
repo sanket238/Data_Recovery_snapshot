@@ -7,10 +7,16 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         read_only_fields = ("created_at", "updated_at", "last_login", "bio", "is_email_verified", "avatar", "id")
-        exclude = ["is_staff", "is_superuser", "is_active", "groups", "user_permissions"]
+        exclude = ["password", "is_staff", "is_superuser", "is_active", "groups", "user_permissions"]
+
+class UserPasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ["password",]
         extra_kwargs = {"password": {"write_only": True}}
+
     def save(self, **kwargs):
-        super(UserSerializer, self).save(**kwargs)
+        super(UserPasswordSerializer, self).save(**kwargs)
         self.instance.set_password(self.validated_data.get("password"))
         self.instance.save()
         return self.instance
