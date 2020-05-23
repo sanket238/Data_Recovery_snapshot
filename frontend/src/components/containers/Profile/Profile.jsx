@@ -5,16 +5,83 @@ import {
   Grid,
   Paper,
   TextField,
-  Button
+  Button,
+  Dialog
 } from "@material-ui/core";
-import { Edit } from "@material-ui/icons";
+import { Edit, CheckCircle, ErrorOutline } from "@material-ui/icons";
 import { withRouter } from "react-router-dom";
 import { useState } from "react";
 import { Fragment } from "react";
+import { useEffect } from "react";
+import ProfileIcon from "../../../assets/profileicon.svg";
 
-const Profile = () => {
+const Profile = props => {
   const [edit, setEdit] = useState(false);
   const [showEdit, setShowEdit] = useState(0);
+  const [inputs, setInputs] = useState({});
+  const [open, setOpen] = useState(false);
+  const [operation, setOperation] = useState("");
+  const [data, setData] = useState([]);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/api/v1/user/profile/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token")
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        setData(data);
+      })
+      .catch(error => {
+        setData([]);
+      });
+  }, []);
+
+  const updateProfile = obj => {
+    const data = { [obj]: inputs[obj] };
+    setError(false);
+
+    fetch(`${process.env.REACT_APP_SERVER_URL}/api/v1/user/profile/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token")
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (obj !== "name") {
+          localStorage.clear();
+        }
+        setError(false);
+        handleClick();
+        setData(data);
+      })
+      .catch(error => {
+        setError(true);
+        console.error("Error:", error);
+      });
+  };
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const handleChange = e => {
+    setInputs({ ...inputs, [e.target.name]: e.target.value });
+  };
 
   const renderForm = () => {
     switch (showEdit) {
@@ -29,14 +96,17 @@ const Profile = () => {
                 marginBottom: 30
               }}
             >
-              Update Name
+              Update Username
             </div>
             <div style={{ marginBottom: 30, textAlign: "center" }}>
               <TextField
                 size="small"
                 defaultValue="Name"
                 id="outlined-basic"
+                onChange={handleChange}
+                defaultValue={data.username}
                 label="Name"
+                name="username"
                 variant="outlined"
               />
             </div>
@@ -44,20 +114,25 @@ const Profile = () => {
               <Button
                 onClick={() => {
                   setEdit(false);
+                  setInputs({});
                   setShowEdit(0);
                 }}
                 style={{ margin: 10 }}
-                type="submit"
+                type="button"
                 variant="contained"
                 color="primary"
               >
                 Cancel
               </Button>
               <Button
-                type="submit"
+                type="button"
                 style={{ margin: 10 }}
                 variant="contained"
                 color="primary"
+                onClick={() => {
+                  updateProfile("username");
+                  setOperation("Username");
+                }}
               >
                 Update
               </Button>
@@ -76,15 +151,17 @@ const Profile = () => {
                 marginBottom: 30
               }}
             >
-              Update Email
+              Update Name
             </div>
             <div style={{ marginBottom: 30, textAlign: "center" }}>
               <TextField
                 size="small"
-                defaultValue="g@email.com"
+                defaultValue="Name"
                 id="outlined-basic"
-                label="Email"
-                type="email"
+                onChange={handleChange}
+                defaultValue={data.name}
+                label="Name"
+                name="name"
                 variant="outlined"
               />
             </div>
@@ -92,20 +169,25 @@ const Profile = () => {
               <Button
                 onClick={() => {
                   setEdit(false);
+                  setInputs({});
                   setShowEdit(0);
                 }}
                 style={{ margin: 10 }}
-                type="submit"
+                type="button"
                 variant="contained"
                 color="primary"
               >
                 Cancel
               </Button>
               <Button
-                type="submit"
+                type="button"
                 style={{ margin: 10 }}
                 variant="contained"
                 color="primary"
+                onClick={() => {
+                  updateProfile("name");
+                  setOperation("Name");
+                }}
               >
                 Update
               </Button>
@@ -124,15 +206,18 @@ const Profile = () => {
                 marginBottom: 30
               }}
             >
-              Update Password
+              Update Email
             </div>
             <div style={{ marginBottom: 30, textAlign: "center" }}>
               <TextField
                 size="small"
-                type="password"
-                defaultValue="password"
+                defaultValue="g@email.com"
                 id="outlined-basic"
-                label="Password"
+                label="Email"
+                onChange={handleChange}
+                defaultValue={data.email}
+                name="email"
+                type="email"
                 variant="outlined"
               />
             </div>
@@ -140,6 +225,7 @@ const Profile = () => {
               <Button
                 onClick={() => {
                   setEdit(false);
+                  setInputs({});
                   setShowEdit(0);
                 }}
                 style={{ margin: 10 }}
@@ -154,6 +240,65 @@ const Profile = () => {
                 style={{ margin: 10 }}
                 variant="contained"
                 color="primary"
+                onClick={() => {
+                  updateProfile("email");
+                  setOperation("Email");
+                }}
+              >
+                Update
+              </Button>
+            </div>
+          </div>
+        );
+
+      case 4:
+        return (
+          <div style={{ padding: 20, fontSize: 18 }}>
+            <div
+              style={{
+                textAlign: "center",
+                fontSize: 20,
+                fontWeight: "bold",
+                marginBottom: 30
+              }}
+            >
+              Update Password
+            </div>
+            <div style={{ marginBottom: 30, textAlign: "center" }}>
+              <TextField
+                size="small"
+                type="password"
+                defaultValue="password"
+                onChange={handleChange}
+                name="password"
+                id="outlined-basic"
+                label="Password"
+                variant="outlined"
+              />
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <Button
+                onClick={() => {
+                  setEdit(false);
+                  setInputs({});
+                  setShowEdit(0);
+                }}
+                style={{ margin: 10 }}
+                type="submit"
+                variant="contained"
+                color="primary"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                style={{ margin: 10 }}
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  updateProfile("password");
+                  setOperation("Password");
+                }}
               >
                 Update
               </Button>
@@ -178,8 +323,8 @@ const Profile = () => {
         >
           <Avatar
             style={{ width: 200, height: 200 }}
-            alt="Travis Howard"
-            src="/static/images/avatar/2.jpg"
+            alt="User"
+            src={ProfileIcon}
           />
         </Badge>
       </div>
@@ -190,7 +335,8 @@ const Profile = () => {
               <Fragment>
                 <div style={{ padding: 20, fontSize: 18 }}>
                   <label>
-                    <span style={{ fontWeight: "bold" }}>Name:</span> Mitesh
+                    <span style={{ fontWeight: "bold" }}>Username:</span>{" "}
+                    {data.username}
                     <span>
                       <Edit
                         onClick={() => {
@@ -209,8 +355,8 @@ const Profile = () => {
                   </label>
                   <br />
                   <label>
-                    <span style={{ fontWeight: "bold" }}>Email:</span>{" "}
-                    mitesh@gmail.com
+                    <span style={{ fontWeight: "bold" }}>Name:</span>{" "}
+                    {data.name}
                     <span>
                       <Edit
                         onClick={() => {
@@ -228,12 +374,32 @@ const Profile = () => {
                     </span>
                   </label>
                   <br />
+                  <label>
+                    <span style={{ fontWeight: "bold" }}>Email:</span>{" "}
+                    {data.email}
+                    <span>
+                      <Edit
+                        onClick={() => {
+                          setEdit(true);
+                          setShowEdit(3);
+                        }}
+                        style={{
+                          fontSize: 18,
+                          marginLeft: 10,
+                          marginBottom: -2,
+                          cursor: "pointer"
+                        }}
+                        fontSize="small"
+                      />
+                    </span>
+                  </label>
+                  <br />
                 </div>
                 <div style={{ padding: 20, fontSize: 18 }}>
                   <label
                     onClick={() => {
                       setEdit(true);
-                      setShowEdit(3);
+                      setShowEdit(4);
                     }}
                     style={{ color: "blue", cursor: "pointer" }}
                   >
@@ -243,6 +409,86 @@ const Profile = () => {
               </Fragment>
             )}
             {edit && renderForm()}
+            <Dialog
+              onClose={handleClose}
+              disableBackdropClick={true}
+              disableEscapeKeyDown={true}
+              aria-labelledby="simple-dialog-title"
+              open={open}
+            >
+              <div style={{ textAlign: "center" }}>
+                <div>
+                  {error === true ? (
+                    <ErrorOutline
+                      color="secondary"
+                      style={{
+                        fontSize: 100,
+                        margin: "30px 70px"
+                      }}
+                    />
+                  ) : (
+                    <CheckCircle
+                      style={{
+                        color: "#32b93c",
+                        fontSize: 100,
+                        margin: "30px 70px"
+                      }}
+                    />
+                  )}
+                </div>
+                {!error ? (
+                  <label
+                    style={{ fontWeight: "bold", fontSize: 16, padding: 30 }}
+                  >
+                    {operation === "Name"
+                      ? operation + " Updated"
+                      : operation + " Updated" + ", Please Signin again."}
+                  </label>
+                ) : (
+                  <label
+                    style={{ fontWeight: "bold", fontSize: 16, padding: 30 }}
+                  >
+                    There was a problem in updating {operation.toLowerCase()},
+                    Please try again later.
+                  </label>
+                )}
+                <div>
+                  <div style={{ textAlign: "center", margin: "15px 0px" }}>
+                    {operation !== "Name" && !error ? (
+                      <Button
+                        type="submit"
+                        onClick={() => {
+                          setEdit(false);
+                          setInputs({});
+                          props.history.push("/signin");
+                          setShowEdit(0);
+                        }}
+                        style={{ margin: 10 }}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Sign In
+                      </Button>
+                    ) : (
+                      <Button
+                        type="submit"
+                        onClick={() => {
+                          setEdit(false);
+                          setInputs({});
+                          setShowEdit(0);
+                          setOpen(false);
+                        }}
+                        style={{ margin: 10 }}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Close
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </Dialog>
           </Paper>
         </Grid>
       </div>
