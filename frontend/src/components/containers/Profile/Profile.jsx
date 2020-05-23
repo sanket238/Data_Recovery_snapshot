@@ -175,25 +175,6 @@ const Profile = () => {
             vertical: "bottom",
             horizontal: "right"
           }}
-          badgeContent={
-            <div className="image-upload">
-              <label htmlFor="file-input">
-                <Edit
-                  style={{
-                    marginLeft: -30,
-                    background: "white",
-                    borderRadius: 20,
-                    border: "2px solid",
-                    padding: 5,
-                    cursor: "pointer"
-                  }}
-                  fontSize="large"
-                  alt="Remy Sharp"
-                />
-              </label>
-              <input style={{ display: "none" }} id="file-input" type="file" />
-            </div>
-          }
         >
           <Avatar
             style={{ width: 200, height: 200 }}
