@@ -139,7 +139,13 @@ const Header = props => {
             <MenuIcon />
           </IconButton>
           <div className={classes.headerClass}>
-            <Typography className={classes.headerClassH6} variant="h6" noWrap>
+            <Typography
+              style={{ cursor: "pointer" }}
+              onClick={() => (props.history.push("/"), props.setHome())}
+              className={classes.headerClassH6}
+              variant="h6"
+              noWrap
+            >
               {props.title}
             </Typography>
             <IconButton

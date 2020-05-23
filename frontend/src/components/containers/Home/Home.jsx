@@ -83,7 +83,7 @@ const Home = props => {
     })
       .then(response => response.json())
       .then(data => {
-        setData(File);
+        setData(data);
       })
       .catch(error => {
         setData([]);
@@ -163,6 +163,12 @@ const Home = props => {
         setNavigation={setNavigation}
         handleDrawerOpen={handleDrawerOpen}
         title={"Data Recovery"}
+        setHome={() => {
+          setOpenSubMenu(false);
+          setSelectedItem("Home");
+          setSubMenuSelectedItem("");
+          setNavigation([]);
+        }}
       />
 
       <Drawer
