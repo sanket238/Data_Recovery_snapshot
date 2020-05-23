@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import user_logged_in, user_logged_out
 from rest_framework.authtoken.models import Token
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.generics import RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from django.conf import settings
 
 from pichu.user.permissions import IsActive
@@ -55,3 +55,6 @@ class DataView(APIView):
         if data is None:
             status = 204
         return Response(data=data, status=status)
+
+class ProfileView(RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated, IsActive)
