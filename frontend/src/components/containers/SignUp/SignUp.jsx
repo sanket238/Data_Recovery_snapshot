@@ -15,6 +15,8 @@ import {
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { Link, withRouter, Redirect } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import { connect } from "react-redux";
 
 import "./SignUp.css";
@@ -63,6 +65,7 @@ const SignUp = props => {
   const [inputs, setInputs] = useState({});
   const [validatePassword, setValidatePassword] = useState(false);
   const [data, setData] = useState({});
+  const [visible, setVisible] = useState(false);
 
   const handleChange = e => {
     if (e.target.name === "password" && validatePassword) {
@@ -172,10 +175,31 @@ const SignUp = props => {
                     fullWidth
                     name="password"
                     label="Password"
-                    type="password"
+                    type={visible ? "text" : "password"}
                     id="password"
                     autoComplete="current-password"
                   />
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      marginTop: -60,
+                      zIndex: 1,
+                      padding: 20
+                    }}
+                  >
+                    {!visible ? (
+                      <VisibilityIcon
+                        onClick={() => setVisible(true)}
+                        style={{ zIndex: 1 }}
+                      />
+                    ) : (
+                      <VisibilityOffIcon
+                        onClick={() => setVisible(false)}
+                        style={{ zIndex: 1 }}
+                      />
+                    )}
+                  </div>
                   {validatePassword && (
                     <div style={{ color: "#dc094e", marginTop: 5 }}>
                       Password should contains at lease 8 characters.
