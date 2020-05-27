@@ -13,6 +13,8 @@ import { withRouter } from "react-router-dom";
 import { useState } from "react";
 import { Fragment } from "react";
 import { useEffect } from "react";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import ProfileIcon from "../../../assets/profileicon.svg";
 
 const Profile = props => {
@@ -23,6 +25,7 @@ const Profile = props => {
   const [operation, setOperation] = useState("");
   const [data, setData] = useState([]);
   const [error, setError] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_SERVER_URL}/api/v1/user/profile/`, {
@@ -267,7 +270,7 @@ const Profile = props => {
             <div style={{ marginBottom: 30, textAlign: "center" }}>
               <TextField
                 size="small"
-                type="password"
+                type={visible ? "text" : "password"}
                 defaultValue="password"
                 onChange={handleChange}
                 name="password"
@@ -275,6 +278,27 @@ const Profile = props => {
                 label="Password"
                 variant="outlined"
               />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  marginTop: -52,
+                  zIndex: 1,
+                  padding: "20px 85px"
+                }}
+              >
+                {!visible ? (
+                  <VisibilityIcon
+                    onClick={() => setVisible(true)}
+                    style={{ zIndex: 1, cursor: "pointer" }}
+                  />
+                ) : (
+                  <VisibilityOffIcon
+                    onClick={() => setVisible(false)}
+                    style={{ zIndex: 1, cursor: "pointer" }}
+                  />
+                )}
+              </div>
             </div>
             <div style={{ textAlign: "center" }}>
               <Button
