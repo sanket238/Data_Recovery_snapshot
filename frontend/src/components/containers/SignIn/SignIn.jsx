@@ -155,12 +155,12 @@ const SignIn = props => {
                 {!visible ? (
                   <VisibilityIcon
                     onClick={() => setVisible(true)}
-                    style={{ zIndex: 1 }}
+                    style={{ zIndex: 1, cursor: "pointer" }}
                   />
                 ) : (
                   <VisibilityOffIcon
                     onClick={() => setVisible(false)}
-                    style={{ zIndex: 1 }}
+                    style={{ zIndex: 1, cursor: "pointer" }}
                   />
                 )}
               </div>
