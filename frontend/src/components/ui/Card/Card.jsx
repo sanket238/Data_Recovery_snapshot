@@ -38,7 +38,7 @@ const Card = props => {
   };
 
   return (
-    <Grid item xs={12} md={6} lg={3} sm={6}>
+    <Grid item xs={12} md={6} lg={4} sm={6}>
       <Paper
         elevation={3}
         style={props.style ? props.style : {}}
@@ -46,18 +46,18 @@ const Card = props => {
         className="dashboard-card"
       >
         <div className="card-padding">
-          <div className={classNames[props.icon]}>{images[props.icon]}</div>
-          <div className="card-number">
-            <label className="card-number-label">{props.value}</label>
-            <div style={{ fontSize: 18, fontWeight: "bold", color: "grey" }}>
-              Files
-            </div>
-            <div style={{ fontSize: 18, fontWeight: "bold", color: "grey" }}>
-              ( {props.directories} Directories )
-            </div>
-          </div>
-          <div>
+          <div className={classNames[props.icon]}>{images["files"]}</div>
+          <div style={{ marginTop: 15 }}>
             <label className="card-label">{props.label}</label>
+          </div>
+          <div className="card-number">
+            {/* <label className="card-number-label">{props.value}</label> */}
+            <div
+              style={{ fontSize: 18, fontWeight: "bold", color: "grey" }}
+            ></div>
+            <div style={{ fontSize: 16, fontWeight: "bold", color: "grey" }}>
+              {props.value} Files and {props.directories} Sub Folders
+            </div>
           </div>
         </div>
       </Paper>
