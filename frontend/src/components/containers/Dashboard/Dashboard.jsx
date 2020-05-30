@@ -1,5 +1,12 @@
 import React, { Fragment } from "react";
-import { Grid, Paper } from "@material-ui/core";
+import {
+  Grid,
+  Paper,
+  Typography,
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails
+} from "@material-ui/core";
 import Card from "../../ui/Card/Card";
 import CommonChart from "../../charts/CommonChart/CommonChart";
 import PieChart from "../../charts/PieChart/PieChart";
@@ -12,6 +19,7 @@ import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import Check from "@material-ui/icons/Check";
 import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import ChevronRight from "@material-ui/icons/ChevronRight";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Clear from "@material-ui/icons/Clear";
 import DeleteOutline from "@material-ui/icons/DeleteOutline";
 import Edit from "@material-ui/icons/Edit";
@@ -24,6 +32,7 @@ import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 import { formatBytes } from "../../../utils/utils";
 import Menu from "../../ui/Menu/Menu";
+import ExpandPanel from "../../ui/ExpandPanel/ExpandPanel";
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -52,6 +61,7 @@ const tableIcons = {
 const Dashboard = props => {
   const [selectedTableCard, setSelectedTableCard] = React.useState("");
   const [filterItem, setFilterItem] = React.useState("All Directories");
+  const [panelData, setPanelData] = React.useState({});
 
   const renderCharts = () => {
     const cardTree = props.navigation.length;
@@ -575,8 +585,118 @@ const Dashboard = props => {
     }
   };
 
+  const renderDetails = data => {
+    const cardTree = props.navigation.length;
+    let Columns = [
+      { type: "string", label: "name" },
+      { type: "number", label: "value" }
+    ];
+
+    let FormattedColumns = [
+      { type: "string", label: "name" },
+      { type: "number", label: "value" },
+      { type: "string", role: "tooltip" }
+    ];
+
+    const totaldirChartData = Object.values(data.directories).map(data => {
+      return { name: data.name, Files: data.files };
+    });
+
+    const totaldirChartDatabyPerc = Object.values(data.directories).map(
+      data => {
+        return [data.name, data.files];
+      }
+    );
+
+    const totaldirSizeData = Object.values(data.directories).map(data => {
+      return { name: data.name, Files: data.size };
+    });
+
+    const totaldirSizeDatabyPerc = Object.values(data.directories).map(data => {
+      return [data.name, data.size, formatBytes(data.size)];
+    });
+
+    return (
+      <Fragment>
+        <Grid xs={12} md={6} lg={6} sm={6} item>
+          <Paper elevation={3}>
+            <div style={{ padding: 15 }}>
+              <Title title="Total Number of Files By File Type" />
+              <CommonChart
+                grid={false}
+                chart={"BarChart"}
+                data={totaldirChartData}
+                labels={["Files"]}
+                colors={["#192a56"]}
+              />
+            </div>
+          </Paper>
+        </Grid>
+        <Grid xs={12} md={6} lg={6} sm={6} item>
+          <Paper elevation={3}>
+            <div style={{ padding: 15, minHeight: 337 }}>
+              <Title title="Total Number of Files By File Type By %" />
+              <PieChart
+                placeholder={false}
+                emptyClassName={"m-t-40"}
+                chartArea={{ left: 25, top: 15, right: 25, bottom: 15 }}
+                rows={totaldirChartDatabyPerc}
+                columns={Columns}
+                chartType={"PieChart"}
+                height={"270px"}
+              />
+            </div>
+          </Paper>
+        </Grid>
+
+        <Grid xs={12} md={6} lg={6} sm={6} item>
+          <Paper elevation={3}>
+            <div style={{ padding: 15 }}>
+              <Title title="Total Size of Directories(in MB) By File Type" />
+              <CommonChart
+                grid={false}
+                chart={"BarChart"}
+                data={totaldirSizeData}
+                format={true}
+                labels={["Files"]}
+                colors={["#192a56"]}
+              />
+            </div>
+          </Paper>
+        </Grid>
+        <Grid xs={12} md={6} lg={6} sm={6} item>
+          <Paper elevation={3}>
+            <div style={{ padding: 15, minHeight: 337 }}>
+              <Title title="Total Size of Directories(in MB) By File Type By %" />
+              <PieChart
+                generateTooltip={true}
+                placeholder={false}
+                emptyClassName={"m-t-40"}
+                chartArea={{ left: 25, top: 15, right: 25, bottom: 15 }}
+                rows={totaldirSizeDatabyPerc}
+                columns={FormattedColumns}
+                chartType={"PieChart"}
+                height={"270px"}
+              />
+            </div>
+          </Paper>
+        </Grid>
+      </Fragment>
+    );
+  };
+
+  console.log(panelData);
+
   return (
     <div>
+      <Grid spacing={3} item>
+        <ExpandPanel
+          onPanelClick={data => setPanelData(data)}
+          data={props.data !== 0 ? props.data : {}}
+        />
+      </Grid>
+
+      {/* {Object.keys(panelData).length > 0 && renderDetails(panelData)} */}
       <Grid container spacing={3} item>
         {renderCards()}
       </Grid>
