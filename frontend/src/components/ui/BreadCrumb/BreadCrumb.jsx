@@ -31,7 +31,9 @@ export default function BreadCrumb(props) {
             component="a"
             label={item}
             icon={<Folder fontSize="small" />}
-            onClick={() => props.handleClick(index + 1)}
+            onClick={() =>
+              index !== props.data.length && props.handleClick(index + 1)
+            }
           />
         );
       })}
