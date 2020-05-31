@@ -72,6 +72,7 @@ const Home = props => {
   const [selectedSubMenuItem, setSubMenuSelectedItem] = React.useState("");
   const [, setError] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [activeItem, setActiveItem] = React.useState([]);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_SERVER_URL}/api/v1/user/data/`, {
@@ -155,6 +156,9 @@ const Home = props => {
     setOpenSubMenu(false);
   };
 
+  console.log(navigation);
+  console.log(activeItem);
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -201,6 +205,8 @@ const Home = props => {
           setOpen={open => setOpen(open)}
           data={data}
           setNavigation={data => setNavigation(data)}
+          activeItem={activeItem}
+          setActiveItem={setActiveItem}
           navigationData={navigation}
           navigation={(index, data) => {
             return typeof index === "string"
@@ -210,7 +216,7 @@ const Home = props => {
               ? index === 0
                 ? setNavigation([])
                 : setNavigation(
-                    navigation.splice(navigation.indexOf(data) - 1, 1)
+                    navigation.filter((item, itemIndex) => itemIndex < index)
                   )
               : setNavigation(navigation.concat(data));
           }}
@@ -225,10 +231,14 @@ const Home = props => {
                 return index === 0
                   ? (setNavigation([]),
                     props.history.push("/"),
-                    setSelectedItem(""))
-                  : index === navigation.length
-                  ? null
-                  : setNavigation(navigation.splice(index - 1, 1));
+                    setSelectedItem(""),
+                    setActiveItem([]))
+                  : (setNavigation(
+                      navigation.filter((item, itemIndex) => itemIndex < index)
+                    ),
+                    setActiveItem(
+                      activeItem.filter((item, itemIndex) => itemIndex < index)
+                    ));
               }}
               data={navigation}
             />
@@ -241,6 +251,8 @@ const Home = props => {
                 component={() => (
                   <Dashboard
                     data={data}
+                    activeItem={activeItem}
+                    setActiveItem={setActiveItem}
                     navigation={navigation}
                     setNavigation={setNavigation}
                   />
