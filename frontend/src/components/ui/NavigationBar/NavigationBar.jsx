@@ -62,6 +62,8 @@ const useStyles = makeStyles(theme => ({
 
 const NavigationBar = props => {
   const [menu, setMenu] = useState([]);
+  const [nav, setNav] = useState([]);
+  const [path, setPath] = useState([]);
 
   const classes = useStyles();
 
@@ -85,7 +87,7 @@ const NavigationBar = props => {
     );
   };
 
-  const renderSubmenu = (matchItem, directoryName, directories, isOpen) => {
+  const renderSubmenu = (matchItem, directoryName, data, isOpen) => {
     return (
       <Collapse
         key={directoryName + Math.random()}
@@ -94,30 +96,104 @@ const NavigationBar = props => {
         unmountOnExit
       >
         <List component="div" style={{ marginLeft: 10 }} disablePadding>
-          {directories &&
-            directories.length > 0 &&
-            directories.map((text, index) => (
+          {data.directories &&
+            data.directories.length > 0 &&
+            data.directories.map((text, index) => (
               <Fragment key={index}>
                 <ListItem
                   style={{ whiteSpace: "normal" }}
                   onClick={() => {
-                    if (text.directories.length > 0) {
-                      const arrayLength = text.path.split(
-                        props.navigationData[0]
-                      );
-                      if (props.navigationData.length !== arrayLength.length) {
-                        props.navigation(arrayLength.length, text.name);
+                    if (data.directories.length > 0) {
+                      if (
+                        path[path.length - 1] + "\\" ===
+                        text.path.split(text.name)[0]
+                      ) {
+                        props.setNavigation(nav.concat(text.name));
+                        setNav(nav.concat(text.name));
+                        setPath(path.concat(text.path));
                       } else {
-                        let modified = props.navigationData;
-                        modified[modified.length - 1] = text.name;
-                        props.setNavigation(modified);
+                        let strName = text.path.split(text.name)[0];
+                        let getIndex = path.lastIndexOf(
+                          strName.replace(new RegExp("\\\\" + "$"), "")
+                        );
+                        let navModified = nav.filter(
+                          (item, itemIndex) => itemIndex <= getIndex
+                        );
+                        let pathModified = path.filter(
+                          (item, itemIndex) => itemIndex <= getIndex
+                        );
+
+                        props.setNavigation(navModified.concat(text.name));
+                        setNav(navModified.concat(text.name));
+                        setPath(pathModified.concat(text.path));
                       }
+
                       props.setSubMenuSelectedItem(text.name);
+
+                      let menuIndex = Object.keys({ ...menu, [text.name]: "" })
+                        .map((m, i) => m)
+                        .lastIndexOf(data.name);
+                      let filtered = Object.keys({
+                        ...menu,
+                        [text.name]: ""
+                      }).filter((m, i) => i <= menuIndex);
+                      let m = {};
+                      filtered.map(d => {
+                        return (m[d] = true);
+                      });
+
                       if (typeof menu[text.name] === "undefined") {
-                        setMenu({ [text.name]: true });
+                        let menuIndex = Object.keys({
+                          ...menu,
+                          [text.name]: ""
+                        })
+                          .map((m, i) => m)
+                          .lastIndexOf(data.name);
+                        let filtered = Object.keys({
+                          ...menu,
+                          [text.name]: ""
+                        }).filter((m, i) => i <= menuIndex);
+                        let m = {};
+                        filtered.map(d => {
+                          return (m[d] = true);
+                        });
+                        setMenu({ ...m, [text.name]: true });
+                        let activeFiltered = props.activeItem.filter(
+                          (_d, i) => i <= menuIndex + 1
+                        );
+                        props.setActiveItem(activeFiltered.concat(text));
                       } else if (menu[text.name] === false) {
-                        setMenu({ ...menu, [text.name]: true });
+                        let menuIndex = Object.keys({
+                          ...menu,
+                          [text.name]: ""
+                        })
+                          .map((m, i) => m)
+                          .lastIndexOf(data.name);
+                        let filtered = Object.keys({
+                          ...menu,
+                          [text.name]: ""
+                        }).filter((m, i) => i <= menuIndex);
+                        let m = {};
+                        filtered.map(d => {
+                          return (m[d] = true);
+                        });
+                        let activeFiltered = props.activeItem.filter(
+                          (_d, i) => i <= menuIndex + 1
+                        );
+                        props.setActiveItem(activeFiltered.concat(text));
+                        setMenu({ ...m, [text.name]: true });
                       } else {
+                        let menuIndex = Object.keys({
+                          ...menu,
+                          [text.name]: ""
+                        })
+                          .map((m, i) => m)
+                          .lastIndexOf(data.name);
+
+                        let activeFiltered = props.activeItem.filter(
+                          (_d, i) => i <= menuIndex + 1
+                        );
+                        props.setActiveItem(activeFiltered.concat(text));
                         setMenu({ ...menu, [text.name]: false });
                       }
                     }
@@ -130,9 +206,7 @@ const NavigationBar = props => {
                       menu[text.name] ? classes.iconActive : classes.icon
                     }
                   >
-                    {Object.keys(text.info).length > 1
-                      ? images["files"]
-                      : images[Object.keys(text.info)[0]]}
+                    {images["files"]}
                   </ListItemIcon>
                   <ListItemText
                     disableTypography={true}
@@ -142,19 +216,10 @@ const NavigationBar = props => {
                     primary={text.name}
                   />
                   {text.directories.length > 0 &&
-                    renderMenuIcon(
-                      props.selectedSubMenuItem,
-                      text.name,
-                      menu[text.name]
-                    )}
+                    renderMenuIcon(matchItem, directoryName, menu[text.name])}
                 </ListItem>
                 {text.directories.length > 0 &&
-                  renderSubmenu(
-                    text.name,
-                    text.name,
-                    text.directories,
-                    menu[text.name]
-                  )}
+                  renderSubmenu(text.name, text.name, text, menu[text.name])}
               </Fragment>
             ))}
         </List>
@@ -195,7 +260,10 @@ const NavigationBar = props => {
           onClick={() => {
             props.setOpen(true);
             setMenu([]);
+            props.setActiveItem(props.activeItem.concat(props.data));
             props.setNavigation([props.data.drive]);
+            setNav([props.data.drive]);
+            setPath([props.data.drive + ":"]);
             props.setSelectedItem(props.data.drive);
             props.setOpenSubMenu(!props.openSubMenu);
             props.history.push("/");
@@ -230,7 +298,7 @@ const NavigationBar = props => {
         {renderSubmenu(
           props.selectedItem,
           props.data.drive,
-          props.data?.directories,
+          props.data,
           props.openSubMenu
         )}
       </Fragment>

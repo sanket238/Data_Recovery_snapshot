@@ -156,9 +156,6 @@ const Home = props => {
     setOpenSubMenu(false);
   };
 
-  console.log(navigation);
-  console.log(activeItem);
-
   return (
     <div className={classes.root}>
       <CssBaseline />
