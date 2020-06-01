@@ -3,10 +3,10 @@ import { withStyles } from "@material-ui/core/styles";
 import MuiExpansionPanel from "@material-ui/core/ExpansionPanel";
 import MuiExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import MuiExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { Paper } from "@material-ui/core";
+import { Paper, Chip, CircularProgress } from "@material-ui/core";
 import { Folder } from "@material-ui/icons";
+import CallMadeIcon from "@material-ui/icons/CallMade";
 import { formatBytes } from "../../../utils/utils";
 import Table from "../Table/Table";
 
@@ -56,7 +56,9 @@ const ExpansionPanelSummary = withStyles({
 
 const ExpansionPanelDetails = withStyles(theme => ({
   root: {
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
+    border: "1px solid lightgrey",
+    borderRadius: 10
   }
 }))(MuiExpansionPanelDetails);
 
@@ -99,20 +101,53 @@ const ExpandPanel = props => {
           expandIcon={<ExpandMoreIcon />}
           aria-controls={index + "-content"}
           id={index + "-header"}
-          onClick={() => props.onPanelClick(data)}
         >
-          <Typography>
-            <span>
-              <Folder
-                style={{
-                  marginBottom: -5,
-                  marginRight: 15,
-                  color: "#5e7ff5"
-                }}
-              />
-            </span>
-            {data.name}
-          </Typography>
+          <div
+            style={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "space-between"
+            }}
+          >
+            <div>
+              <div style={{ fontSize: 16, fontWeight: "bold", color: "grey" }}>
+                <span>
+                  <Folder
+                    style={{
+                      marginBottom: -5,
+                      marginRight: 15,
+                      color: "#5e7ff5"
+                    }}
+                  />
+                </span>
+                <span>{data.name}</span>
+                <Chip
+                  onClick={() => props.onPanelClick(data)}
+                  style={{ marginLeft: 25 }}
+                  size="small"
+                  label="View Details"
+                  clickable
+                  color="primary"
+                  onDelete={() => props.onPanelClick(data)}
+                  deleteIcon={<CallMadeIcon style={{ marginRight: 10 }} />}
+                />
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                width: 200,
+                justifyContent: "space-between",
+                fontSize: 16,
+                fontWeight: "bold",
+                color: "grey",
+                marginTop: 3
+              }}
+            >
+              <span>{formatBytes(data.totalSize)}</span>
+              <span>{data.numberOfFiles} Files</span>
+            </div>
+          </div>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <div style={{ width: "100%" }}>
@@ -128,11 +163,10 @@ const ExpandPanel = props => {
       </ExpansionPanel>
     );
   };
-
   return (
-    <div>
-      <Paper style={{ borderRadius: 10 }}>
-        {props.data.length !== 0 && (
+    <div style={{ width: "100%" }}>
+      <Paper style={{ borderRadius: 10, padding: 15 }}>
+        {props.data.length !== 0 ? (
           <ExpansionPanel
             style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
             key={props.data.drive}
@@ -142,20 +176,55 @@ const ExpandPanel = props => {
               expandIcon={<ExpandMoreIcon />}
               aria-controls={props.data.drive + "-content"}
               id={props.data.drive + "-header"}
-              onClick={() => props.onPanelClick(props.data)}
             >
-              <Typography>
-                <span>
-                  <Folder
-                    style={{
-                      marginBottom: -5,
-                      marginRight: 15,
-                      color: "#5e7ff5"
-                    }}
-                  />
-                </span>
-                {props.data.drive}
-              </Typography>
+              <div
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  justifyContent: "space-between"
+                }}
+              >
+                <div>
+                  <div
+                    style={{ fontSize: 16, fontWeight: "bold", color: "grey" }}
+                  >
+                    <span>
+                      <Folder
+                        style={{
+                          marginBottom: -5,
+                          marginRight: 15,
+                          color: "#5e7ff5"
+                        }}
+                      />
+                    </span>
+                    <span>{props.data.drive}</span>
+                    <Chip
+                      onClick={() => props.onPanelClick(props.data)}
+                      style={{ marginLeft: 25 }}
+                      size="small"
+                      label="View Details"
+                      clickable
+                      color="primary"
+                      onDelete={() => props.onPanelClick(props.data)}
+                      deleteIcon={<CallMadeIcon style={{ marginRight: 10 }} />}
+                    />
+                  </div>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    width: 200,
+                    justifyContent: "space-between",
+                    fontSize: 16,
+                    fontWeight: "bold",
+                    color: "grey",
+                    marginTop: 3
+                  }}
+                >
+                  <span>{formatBytes(props.data.totalSize)}</span>
+                  <span>{props.data.totalFiles} Files</span>
+                </div>
+              </div>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <div style={{ width: "100%" }}>
@@ -166,6 +235,17 @@ const ExpandPanel = props => {
               </div>
             </ExpansionPanelDetails>
           </ExpansionPanel>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: 100
+            }}
+          >
+            <CircularProgress />
+          </div>
         )}
       </Paper>
     </div>
