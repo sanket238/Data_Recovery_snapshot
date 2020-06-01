@@ -172,7 +172,7 @@ const Home = props => {
         }}
       />
 
-      <Drawer
+      {/* <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
@@ -218,7 +218,7 @@ const Home = props => {
               : setNavigation(navigation.concat(data));
           }}
         />
-      </Drawer>
+      </Drawer> */}
       <main className={classes.content}>
         <div className={classes.toolbar} />
         <Container>
