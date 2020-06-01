@@ -1,12 +1,5 @@
 import React, { Fragment } from "react";
-import {
-  Grid,
-  Paper,
-  Typography,
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails
-} from "@material-ui/core";
+import { Grid, Paper } from "@material-ui/core";
 import Card from "../../ui/Card/Card";
 import CommonChart from "../../charts/CommonChart/CommonChart";
 import PieChart from "../../charts/PieChart/PieChart";
@@ -18,7 +11,6 @@ import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import Check from "@material-ui/icons/Check";
 import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import ChevronRight from "@material-ui/icons/ChevronRight";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Clear from "@material-ui/icons/Clear";
 import DeleteOutline from "@material-ui/icons/DeleteOutline";
 import Edit from "@material-ui/icons/Edit";
@@ -221,8 +213,10 @@ const Dashboard = props => {
       tableData = [];
 
     if (
-      props.activeItem.length > 0 &&
-      props.activeItem[props.activeItem.length - 1].directories.length === 0
+      // props.activeItem.length > 0 &&
+      // props.activeItem[props.activeItem.length - 1].directories.length === 0
+      data.files &&
+      data.files.length > 0
     ) {
       column = [
         { title: "Name", field: "name" },
@@ -265,6 +259,26 @@ const Dashboard = props => {
             />
           ) : null}
         </div>
+        {data.files && data.files.length > 0 && (
+          <Grid xs={12} md={6} lg={6} sm={6} item>
+            <Paper elevation={3} style={{ padding: 15 }}>
+              <div style={{ maxHeight: 440, overflowY: "auto" }}>
+                <MaterialTable
+                  icons={tableIcons}
+                  title={
+                    <Title
+                      title={
+                        props.navigation[props.navigation.length - 1] + " Files"
+                      }
+                    />
+                  }
+                  columns={column}
+                  data={tableData}
+                />
+              </div>
+            </Paper>
+          </Grid>
+        )}
         <Grid xs={12} md={6} lg={6} sm={6} item>
           <Paper elevation={3}>
             <div style={{ padding: 15 }}>
@@ -335,7 +349,7 @@ const Dashboard = props => {
           <Title title={"Overview"} />
         </div>
         <Grid xs={12} md={6} lg={6} sm={6} item>
-          <Paper elevation={3}>
+          <Paper elevation={3} style={{ padding: 15 }}>
             <div style={{ maxHeight: 440, overflowY: "auto" }}>
               <MaterialTable
                 icons={tableIcons}
@@ -356,132 +370,65 @@ const Dashboard = props => {
     );
   };
 
-  const renderDetails = data => {
-    const cardTree = props.navigation.length;
-    let Columns = [
-      { type: "string", label: "name" },
-      { type: "number", label: "value" }
-    ];
-
-    let FormattedColumns = [
-      { type: "string", label: "name" },
-      { type: "number", label: "value" },
-      { type: "string", role: "tooltip" }
-    ];
-
-    const totaldirChartData = Object.values(data.directories).map(data => {
-      return { name: data.name, Files: data.files };
-    });
-
-    const totaldirChartDatabyPerc = Object.values(data.directories).map(
-      data => {
-        return [data.name, data.files];
-      }
-    );
-
-    const totaldirSizeData = Object.values(data.directories).map(data => {
-      return { name: data.name, Files: data.size };
-    });
-
-    const totaldirSizeDatabyPerc = Object.values(data.directories).map(data => {
-      return [data.name, data.size, formatBytes(data.size)];
-    });
-
+  const renderCard = data => {
     return (
-      <Fragment>
-        <Grid xs={12} md={6} lg={6} sm={6} item>
-          <Paper elevation={3}>
-            <div style={{ padding: 15 }}>
-              <Title title="Total Number of Files By File Type" />
-              <CommonChart
-                grid={false}
-                chart={"BarChart"}
-                data={totaldirChartData}
-                labels={["Files"]}
-                colors={["#192a56"]}
-              />
-            </div>
-          </Paper>
-        </Grid>
-        <Grid xs={12} md={6} lg={6} sm={6} item>
-          <Paper elevation={3}>
-            <div style={{ padding: 15, minHeight: 337 }}>
-              <Title title="Total Number of Files By File Type By %" />
-              <PieChart
-                placeholder={false}
-                emptyClassName={"m-t-40"}
-                chartArea={{ left: 25, top: 15, right: 25, bottom: 15 }}
-                rows={totaldirChartDatabyPerc}
-                columns={Columns}
-                chartType={"PieChart"}
-                height={"270px"}
-              />
-            </div>
-          </Paper>
-        </Grid>
-
-        <Grid xs={12} md={6} lg={6} sm={6} item>
-          <Paper elevation={3}>
-            <div style={{ padding: 15 }}>
-              <Title title="Total Size of Directories(in MB) By File Type" />
-              <CommonChart
-                grid={false}
-                chart={"BarChart"}
-                data={totaldirSizeData}
-                format={true}
-                labels={["Files"]}
-                colors={["#192a56"]}
-              />
-            </div>
-          </Paper>
-        </Grid>
-        <Grid xs={12} md={6} lg={6} sm={6} item>
-          <Paper elevation={3}>
-            <div style={{ padding: 15, minHeight: 337 }}>
-              <Title title="Total Size of Directories(in MB) By File Type By %" />
-              <PieChart
-                generateTooltip={true}
-                placeholder={false}
-                emptyClassName={"m-t-40"}
-                chartArea={{ left: 25, top: 15, right: 25, bottom: 15 }}
-                rows={totaldirSizeDatabyPerc}
-                columns={FormattedColumns}
-                chartType={"PieChart"}
-                height={"270px"}
-              />
-            </div>
-          </Paper>
-        </Grid>
-      </Fragment>
+      <Card
+        style={{}}
+        key={data.drive ? data.drive : data.name}
+        onClick={value => {}}
+        label={data.drive ? data.drive : data.name}
+        icon={"files"}
+        directories={
+          typeof data.directories !== "undefined" ? data.directories.length : 0
+        }
+        value={data.totalFiles ? data.totalFiles : data.numberOfFiles}
+        size={data.totalSize}
+      />
     );
   };
 
-  console.log(panelData);
-
   return (
     <div>
-      <Grid spacing={3} item>
-        <ExpandPanel
-          onPanelClick={data => setPanelData(data)}
-          data={props.data !== 0 ? props.data : {}}
-        />
-      </Grid>
-
-      {/* {Object.keys(panelData).length > 0 && renderDetails(panelData)} */}
-      <Grid container spacing={3} item>
-        {renderCards(
-          props.activeItem.length === 0
-            ? props.data
-            : props.activeItem[props.activeItem.length - 1]
-        )}
-      </Grid>
-      <Grid container style={{ marginTop: 25 }} spacing={3} item>
-        {renderCharts(
-          props.activeItem.length === 0
-            ? props.data
-            : props.activeItem[props.activeItem.length - 1]
-        )}
-      </Grid>
+      {props.activeItem.length === 0 ? (
+        <Fragment>
+          <Grid container spacing={3} item>
+            {renderCard(
+              props.activeItem.length === 0 ? props.data : props.activeItem
+            )}
+          </Grid>
+          <Grid container style={{ marginTop: 25 }} spacing={3} item>
+            <Grid item xs={12}>
+              <ExpandPanel
+                onPanelClick={data => {
+                  setPanelData(data);
+                  props.setNavigation(
+                    props.navigation.concat(data.drive ? data.drive : data.name)
+                  );
+                  props.setActiveItem(props.activeItem.concat(data));
+                }}
+                data={props.data !== 0 ? props.data : {}}
+              />
+            </Grid>
+          </Grid>
+        </Fragment>
+      ) : (
+        <Fragment>
+          <Grid container spacing={3} item>
+            {renderCard(
+              props.activeItem.length === 0
+                ? props.data
+                : props.activeItem[props.activeItem.length - 1]
+            )}
+          </Grid>
+          <Grid container style={{ marginTop: 25 }} spacing={3} item>
+            {renderCharts(
+              props.activeItem.length === 0
+                ? props.data
+                : props.activeItem[props.activeItem.length - 1]
+            )}
+          </Grid>
+        </Fragment>
+      )}
     </div>
   );
 };
