@@ -29,6 +29,10 @@ body {
   background: #555;
 }
 
+.MuiChip-labelSmall {
+  margin-left: 10px !important;
+}
+
 .MuiPopover-paper {
   top: 50px;
 }
