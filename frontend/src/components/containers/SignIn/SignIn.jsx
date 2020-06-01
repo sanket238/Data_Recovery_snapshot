@@ -95,6 +95,7 @@ const SignIn = props => {
             setError(true);
           } else {
             localStorage.setItem("isLoggedIn", true);
+            localStorage.setItem("name", data.name);
             localStorage.setItem("token", data.token);
             props.history.push("/");
           }
