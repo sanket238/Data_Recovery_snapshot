@@ -104,7 +104,7 @@ const Profile = props => {
             <div style={{ marginBottom: 30, textAlign: "center" }}>
               <TextField
                 size="small"
-                defaultValue="Name"
+                placeholder="Name"
                 id="outlined-basic"
                 onChange={handleChange}
                 defaultValue={data.username}
@@ -159,7 +159,7 @@ const Profile = props => {
             <div style={{ marginBottom: 30, textAlign: "center" }}>
               <TextField
                 size="small"
-                defaultValue="Name"
+                placeholder="Name"
                 id="outlined-basic"
                 onChange={handleChange}
                 defaultValue={data.name}
@@ -214,7 +214,7 @@ const Profile = props => {
             <div style={{ marginBottom: 30, textAlign: "center" }}>
               <TextField
                 size="small"
-                defaultValue="g@email.com"
+                placeholder="g@email.com"
                 id="outlined-basic"
                 label="Email"
                 onChange={handleChange}
