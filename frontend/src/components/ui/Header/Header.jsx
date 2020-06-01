@@ -91,9 +91,7 @@ const Header = props => {
     >
       <div className={classes.profileMenu}>
         <Typography variant="inherit" noWrap>
-          {localStorage.getItem("firstname") +
-            " " +
-            localStorage.getItem("lastname")}
+          {localStorage.getItem("name")}
         </Typography>
       </div>
       <Divider />
@@ -104,7 +102,7 @@ const Header = props => {
           props.history.push("/profile");
         }}
       >
-        My account
+        Profile
       </MenuItem>
       <MenuItem
         onClick={() => {
@@ -127,7 +125,7 @@ const Header = props => {
         })}
       >
         <Toolbar>
-          <IconButton
+          {/* <IconButton
             color="inherit"
             aria-label="open drawer"
             onClick={props.handleDrawerOpen}
@@ -137,7 +135,7 @@ const Header = props => {
             })}
           >
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
           <div className={classes.headerClass}>
             <Typography
               style={{ cursor: "pointer" }}
