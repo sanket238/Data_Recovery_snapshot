@@ -33,6 +33,18 @@ body {
   margin-left: 10px !important;
 }
 
+@media screen and (max-width: 600px) {
+  .MuiChip-labelSmall {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .MuiChip-deleteIconSmall {
+    margin: 0px 4px !important;
+  }
+}
+
 .MuiPopover-paper {
   top: 50px;
 }
