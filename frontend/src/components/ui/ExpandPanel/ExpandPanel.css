@@ -1,0 +1,67 @@
+.ExpandPanel .collapse {
+  padding: 15px;
+  cursor: pointer;
+  display: flex !important;
+  justify-content: space-between;
+}
+
+.ExpandPanel .collapse-details-button {
+  display: none;
+}
+
+.ExpandPanel .collapse-subcontainer {
+  padding: 10px 15px !important;
+  border: 1px solid lightgrey;
+  border-radius: 10px;
+}
+
+.ExpandPanel .expandpanel-values {
+  width: 200px;
+  font-size: 16px;
+  margin-top: 4px;
+  color: grey;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+}
+
+.Collapsible__trigger::before {
+  font-family: "FontAwesome";
+  content: "\f107";
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  display: block;
+  transition: transform 300ms;
+}
+
+@media screen and (max-width: 600px) {
+  .ExpandPanel .collapse {
+    padding: 0px !important;
+    display: block !important;
+  }
+  .ExpandPanel .expandpanel-values {
+    width: auto !important;
+    display: flex !important;
+    justify-content: space-around !important;
+    margin: 7px 0px;
+  }
+  .ExpandPanel .Collapsible {
+    padding: 10px 0px;
+  }
+  .ExpandPanel .collapse-subcontainer {
+    padding: 0px 5px !important;
+    border: 1px solid grey;
+    border-radius: 5px;
+  }
+  .collapse-details-button {
+    text-align: center;
+    display: block !important;
+    margin-bottom: 15px !important;
+    margin-top: 15px !important;
+  }
+
+  .collapse-table {
+    display: none !important;
+  }
+}
