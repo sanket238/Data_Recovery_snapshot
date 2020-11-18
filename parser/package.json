@@ -22,7 +22,7 @@
     "redis": "^2.8.0",
     "regex-escape": "^3.4.9",
     "rxjs": "^6.4.0",
-    "semantic-release": "^15.13.3",
+    "semantic-release": "^17.2.3",
     "string.prototype.matchall": "^4.0.2",
     "unescape": "^1.0.1",
     "uuid": "^3.3.2"
