@@ -19,7 +19,7 @@
     "morgan": "^1.10.0",
     "mysql": "^2.16.0",
     "pino": "^5.12.2",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "regex-escape": "^3.4.9",
     "rxjs": "^6.4.0",
     "semantic-release": "^15.13.3",
